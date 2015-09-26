@@ -1,0 +1,102 @@
+﻿@model BootApp.Models.Group
+
+@{
+    ViewBag.Title = "GroupPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"><h2>@Model.GroupName</h2></div>
+    </div>
+     <div class="row">
+    <div class="col-md-2">
+                @if (Request.IsAuthenticated)
+                {
+                    if (Model.Users.Contains(User.Identity.Name))
+                    {
+                        <form class="form-horizontal" method="post">
+                            <textarea name="Wade" class="sr-only">-1</textarea>
+                            <textarea name="GroupId" class="sr-only">@Model.GroupId</textarea>
+                            <button class="btn-primary btn" name="WadeOut" type="submit">Покинуть группу</button>
+                        </form>
+                    }
+
+                    else
+                    {
+                        <form class="form-horizontal" method="post">
+                            <textarea name="Wade" class="sr-only">-2</textarea>
+                            <textarea name="GroupId" class="sr-only">@Model.GroupId</textarea>
+                            <button class="btn-primary btn" name="WadeIn" type="submit">Вступить в группу</button>
+                        </form>
+                    }
+                 }
+       </div> 
+         <div class="col-md-2">
+             @if (Model.Users.Contains(User.Identity.Name)) { 
+             <button class="btn btn-primary" name="AddArt" type="submit" onclick="location.href = '/Home/AddArticleToGroup/@Model.GroupId'">Добавить статью в группу</button>
+             }
+         </div>
+    </div>
+
+    <div class="row">
+        
+        <div class="col-md-6">
+            <h3>Список публикаций</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Автор</th>
+                        <th>Подробнее</th>
+                    </tr>
+                </thead>
+                @foreach (var a in Model.Articles)
+                {
+                    <tbody>
+                        <tr>
+                            <td>@a.title</td>
+                            <td>@a.author</td>
+                            <td><a href="/Home/Details/@a.ArticleId">Подробнее..</a></td>
+                            
+                                @if (Model.Users.Contains(User.Identity.Name))
+                                { 
+                                  <td>
+                                <form class="form-horizontal" method="post">
+                                    <textarea name="Wade" class="sr-only">@a.ArticleId</textarea>
+                                    <textarea name="GroupId" class="sr-only">@Model.GroupId</textarea>
+                                    <button class="btn-primary btn" name="Delete" type="submit">Удалить из списка группы</button>
+                                </form>
+                                  </td>
+                                }
+                            
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Участники группы</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                    </tr>
+                </thead>
+                @foreach (var u in Model.Users)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                @u
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </div>
+    </div>
+</div>

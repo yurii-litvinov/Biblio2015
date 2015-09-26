@@ -1,0 +1,36 @@
+﻿@model BootApp.Models.RegisterModel
+
+@{
+    ViewBag.Title = "SignIn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+}
+
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <form  class="form-horizontal" method="post">
+                @Html.ValidationSummary(true)
+                <h2 class="form-signin-heading">Пожалуйста, зарегистрируйтесь</h2>
+                <label for="Username" class="sr-only">Username</label>
+                <input type="text" name="Username" id="Username" class="form-control" placeholder="Username" required autofocus>
+                @Html.ValidationMessageFor(model => model.Username)
+                <label for="Email" class="sr-only">Email</label>
+                <input type="text" name="Email" id="Email" class="form-control" placeholder="Email" required autofocus>
+                @Html.ValidationMessageFor(model => model.Email)
+                <label for="Password" class="sr-only">Password</label>
+                <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" required>
+                @Html.ValidationMessageFor(model => model.Password)
+                <label for="ConfirmPassword" class="sr-only">ConfirmPassword</label>
+                <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" required autofocus>
+                @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
+            </form>
+        </div> <!-- col -->
+   </div>  <!--row--> 
+
+</div> <!--container -->
+

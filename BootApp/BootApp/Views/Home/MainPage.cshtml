@@ -1,0 +1,64 @@
+﻿@model List<BootApp.Models.Article>
+@{
+    ViewBag.Title = "MainPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .container {
+        font-size: medium;
+    }
+    textarea {
+        resize:none;
+    }
+</style>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <form class="form-horizontal" method="post">
+            <div class="input-group">
+                <input type="text" id="Search" name="Search" class="form-control" placeholder="Поиск в списке статей">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">Найти</button>
+                </span>
+            </div>
+                </form>
+        </div> 
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10"> 
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Год</th>
+                    <th>Подробнее</th> 
+                    
+                </tr>
+            </thead>
+            @foreach (var b in Model)
+            {
+                <tbody>
+                    <tr>
+                    <td><p>@b.title</p></td>
+                    <td><p>@b.author</p></td>
+                    <td><p>@b.year</p></td>
+                        <td><a href="/Home/Details/@b.ArticleId">Подробнее..</a></td>
+                       <!-- <td><textarea class="form-control" rows="3" readonly style="border-color:white; background-color:white" >b.note</textarea></td>
+                    <!--<td><p><a href="/Home/Buy/b.Id">Купить</a></p></td-->
+                    </tr>
+                </tbody>
+            }
+        </table>
+        </div>
+    </div>
+</div>

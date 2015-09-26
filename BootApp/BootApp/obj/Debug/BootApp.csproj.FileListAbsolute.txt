@@ -1,0 +1,123 @@
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\BootApp.dll.config
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\BootApp.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\BootApp.pdb
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\Antlr3.Runtime.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\EntityFramework.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\Newtonsoft.Json.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.Mvc.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.Optimization.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.Providers.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.Razor.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.WebPages.Deployment.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.WebPages.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.WebPages.Razor.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\WebGrease.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\EntityFramework.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\Newtonsoft.Json.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.Mvc.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.Razor.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.WebPages.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.WebPages.Deployment.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\System.Web.WebPages.Razor.xml
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\EntityFramework.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.Mvc.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.Optimization.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.Providers.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.Razor.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.WebPages.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.WebPages.Deployment.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\bin\ru\System.Web.WebPages.Razor.resources.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\obj\Debug\BootApp.csprojResolveAssemblyReference.cache
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\obj\Debug\BootApp.dll
+c:\users\анна\documents\visual studio 2013\Projects\BootApp\BootApp\obj\Debug\BootApp.pdb
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\BootApp.dll.config
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\BootApp.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\BootApp.pdb
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\Newtonsoft.Json.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.Razor.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.WebPages.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.WebPages.Razor.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\EntityFramework.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.Mvc.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.Razor.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.WebPages.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\System.Web.WebPages.Razor.xml
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\EntityFramework.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.Mvc.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.Optimization.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.Providers.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.Razor.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.WebPages.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.WebPages.Deployment.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\ru\System.Web.WebPages.Razor.resources.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\obj\Debug\BootApp.csprojResolveAssemblyReference.cache
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\obj\Debug\BootApp.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\obj\Debug\BootApp.pdb
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\BootApp.dll.config
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\BootApp.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\BootApp.pdb
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\Newtonsoft.Json.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.Razor.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.WebPages.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.WebPages.Razor.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\EntityFramework.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.Mvc.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.Razor.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.WebPages.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\System.Web.WebPages.Razor.xml
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\EntityFramework.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.Mvc.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.Optimization.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.Providers.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.Razor.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.WebPages.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.WebPages.Deployment.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\bin\ru\System.Web.WebPages.Razor.resources.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\obj\Debug\BootApp.csprojResolveAssemblyReference.cache
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\obj\Debug\BootApp.dll
+C:\Users\Галина\Desktop\project2015\BootApp\BootApp\obj\Debug\BootApp.pdb
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\Portable.Licensing.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\T4MVCExtensions.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\TwitterBootstrapMVC4.dll
+C:\Users\Галина\Documents\GitHub\project2015\BootApp\BootApp\bin\Portable.Licensing.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\BootApp.dll.config
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\BootApp.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\BootApp.pdb
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\Newtonsoft.Json.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\Portable.Licensing.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.Razor.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.WebPages.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.WebPages.Razor.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\T4MVCExtensions.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\TwitterBootstrapMVC4.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\Portable.Licensing.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\EntityFramework.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\Microsoft.Web.Infrastructure.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.Mvc.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.Razor.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.WebPages.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\System.Web.WebPages.Razor.xml
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\EntityFramework.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.Mvc.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.Optimization.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.Providers.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.Razor.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.WebPages.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.WebPages.Deployment.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\bin\ru\System.Web.WebPages.Razor.resources.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\obj\Debug\BootApp.csprojResolveAssemblyReference.cache
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\obj\Debug\BootApp.dll
+C:\Users\Галина\Desktop\Biblio\BootApp\BootApp\obj\Debug\BootApp.pdb
