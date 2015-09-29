@@ -281,6 +281,7 @@
     <Content Include="Views\Shared\UserArticles.cshtml" />
     <Content Include="Views\Home\AddArticleToGroup.cshtml" />
     <Content Include="Views\Home\CorrectArticle.cshtml" />
+    <Content Include="Views\Home\ErrorOccured.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BibFiles\" />

@@ -18,8 +18,10 @@ namespace BootApp.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            ListsOfStuff list = new ListsOfStuff();
-            return View(list);
+            ListsOfStuff list1 = new ListsOfStuff();
+            list1.wrongDate = false;
+            list1.wrongFile = false;
+            return View(list1);
         }
 
         public ActionResult About()
@@ -146,6 +148,17 @@ namespace BootApp.Controllers
             return View("MainPage", list);
         }
 
+        /*public ActionResult Search(string s)
+        {
+            if (s == "")
+            {
+                return View("MainPage", db.Articles.ToList());
+            }
+            list = db.SearchByTag(s);
+            //return RedirectToAction("SearchResult", list);
+            return View("MainPage", list);
+        }*/
+
         public ActionResult GroupPage(int id)
         {
             Group g = db.Groups.Find(id);
@@ -178,7 +191,7 @@ namespace BootApp.Controllers
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
-        public FileResult GetBibFile1(string username)
+        /*public FileResult GetBibFile1(string username)
         {
             string fileName = CreateBibFile(username);
             string filePath = "~/BibFiles/" + fileName;
@@ -190,12 +203,33 @@ namespace BootApp.Controllers
             string fileName = CreateBibFile(group);
             string filePath = "~/BibFiles/" + fileName;
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }*/
+
+        public FileResult kek(int id)
+        {
+            Group group = db.Groups.Find(id);
+            string name = group.GroupName;
+            CreateBibFile(group);
+
+            string fileName = group.GroupName + ".bib";
+            string filePath = "~/BibFiles/" + fileName;
+            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+
+        }
+
+        public FileResult pls()
+        {
+            string name = User.Identity.Name;
+            CreateBibFile(name);
+            string fileName = name + ".bib";
+            string filePath = "~/BibFiles/" + fileName;
+            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
         public string CreateBibFile(Article art)
         {
             string directory = AppDomain.CurrentDomain.BaseDirectory;
-            string name = art.title.Split('.') + ".bib";
+            string name = art.title + ".bib";
             string path = directory + "/BibFiles/" + name;
             System.IO.StreamWriter textFile = new System.IO.StreamWriter(@path);
             AddBib(textFile, art);
@@ -254,9 +288,14 @@ namespace BootApp.Controllers
             {
                 textFile.WriteLine("publisher = {" + art.publisher + "},");
             }
+          
             if (art.journal != "")
             {
                 textFile.WriteLine("journal = {" + art.journal + "},");
+            }
+            if (art.year != "")
+            {
+                textFile.WriteLine("year = {" + art.year + "},");
             }
             textFile.WriteLine("note = {" + art.note + "},");
             textFile.WriteLine("}");
@@ -267,6 +306,23 @@ namespace BootApp.Controllers
         public ActionResult Index(IEnumerable<HttpPostedFileBase> fileUpload, string ArticleName, string TagList, 
             string Author, string Year, string Journal, string Publisher, string Note)
         {
+            if (ArticleName == "") 
+            { 
+                ListsOfStuff list1 = new ListsOfStuff();
+                return View(list1); 
+            }
+            if ((DateTime.Now.Year <= Convert.ToInt32(Year)) || (Convert.ToInt32(Year) <= 1500))
+            {
+                ListsOfStuff list1 = new ListsOfStuff();
+                list1.ArticleName = ArticleName;
+                list1.Author = Author;
+                list1.Journal = Journal;
+                list1.Note = Note;
+                list1.Publisher = Publisher;
+                list1.TagList = TagList;
+                list1.wrongDate = true;
+                return View(list1);
+            }
             foreach (var file in fileUpload)
             {
                 string filename = "";
@@ -276,8 +332,16 @@ namespace BootApp.Controllers
                     var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
                     if (fileExt != allowFormat)
                     {
-                        ModelState.AddModelError("fileUpload", "Неверный тип файла. Поддерживается только формат pdf.");
-                        return View();
+                        ListsOfStuff list1 = new ListsOfStuff();
+                        list1.ArticleName = ArticleName;
+                        list1.Author = Author;
+                        list1.Journal = Journal;
+                        list1.Note = Note;
+                        list1.Publisher = Publisher;
+                        list1.TagList = TagList;
+                        list1.Year = Year;
+                        list1.wrongFile = true;
+                        return View(list1);
                     }
                     //string path = AppDomain.CurrentDomain.BaseDirectory + "UploadedFiles/";
                     filename = System.IO.Path.GetFileName(file.FileName);
@@ -317,6 +381,11 @@ namespace BootApp.Controllers
             }
 
             return RedirectToAction("Finish");
+        }
+
+        public ActionResult ErrorOccured()
+        {
+            return View();
         }
 
         public ActionResult Finish()

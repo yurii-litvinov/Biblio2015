@@ -7,6 +7,16 @@ namespace BootApp.Models
 {
     public class ListsOfStuff
     {
+        public bool wrongFile { get; set; }
+        public bool wrongDate { get; set; }
+
+        public string ArticleName {get; set;}
+        public string TagList {get; set;}
+        public string Author {get;set;}
+        public string Year { get; set; }
+        public string Journal { get; set; }
+        public string Publisher{ get; set; }
+        public string Note { get; set; }
         AppContext db = new AppContext();
         public List<Group> GroupsByUserName (string name)
         {

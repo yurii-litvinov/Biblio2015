@@ -42,7 +42,7 @@
                     <th>Автор</th>
                     <th>Год</th>
                     <th>Подробнее</th> 
-                    
+                    <th>Тэги</th>
                 </tr>
             </thead>
             @foreach (var b in Model)
@@ -55,6 +55,12 @@
                         <td><a href="/Home/Details/@b.ArticleId">Подробнее..</a></td>
                        <!-- <td><textarea class="form-control" rows="3" readonly style="border-color:white; background-color:white" >b.note</textarea></td>
                     <!--<td><p><a href="/Home/Buy/b.Id">Купить</a></p></td-->
+                        <td>
+                        @foreach (var t in b.Tags)
+                        {
+                            <p>@t.TagName </p> 
+                        }
+                        </td>
                     </tr>
                 </tbody>
             }
