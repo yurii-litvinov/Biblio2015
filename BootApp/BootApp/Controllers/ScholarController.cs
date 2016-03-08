@@ -14,7 +14,7 @@ namespace BootApp.Controllers
 {
     public class ScholarController : Controller
     {
-        List<ScholarArticle> articles = new List<ScholarArticle>();
+        //List<ScholarArticle> articles = new List<ScholarArticle>();
 
         //
         // GET: /Scholar/
@@ -39,7 +39,7 @@ namespace BootApp.Controllers
             streamReader.Close();
 
             // creating list of articles 
-            //List<ScholarArticle> articles = new List<ScholarArticle>();
+            List<ScholarArticle> articles = new List<ScholarArticle>();
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
 
@@ -67,7 +67,11 @@ namespace BootApp.Controllers
 
                     // adding citiations amount
                     string xPathCitiations = string.Format("//*[@id='gs_ccl']/div[{0}]/div[2]/div[3]/a[1]", i);
-                    article.Citiations = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                    string citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                    if (citiationsCheck.StartsWith("Цитируется"))
+                        article.Citiations = citiationsCheck;
+                    else
+                        article.Citiations = "Эта статья нигде не цитируется. ";
 
                     articles.Insert(i - 1, article);
                 }
@@ -86,7 +90,11 @@ namespace BootApp.Controllers
                         article.Reference = refCheck.GetAttributeValue("href", null);
 
                         string xPathCitiations = string.Format("//*[@id='gs_ccl']/div[{0}]/div/div[3]/a[1]", i);
-                        article.Citiations = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        string citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        if (citiationsCheck.StartsWith("Цитируется"))
+                            article.Citiations = citiationsCheck;
+                        else
+                            article.Citiations = "Эта статья нигде не цитируется. ";
 
                         articles.Insert(i - 1, article);
                     }
@@ -94,10 +102,12 @@ namespace BootApp.Controllers
                     else
                     {
                         // case, when article do not has reference, but has a tag [citiation]
-                        string xPathTitle1 = string.Format("//*[@id='gs_ccl']/div[{0}]/div/h3/text()", i);
-                        string xPathTitle2 = string.Format("//*[@id='gs_ccl']/div[{0}]/div/h3/b", i);
-                        string xPathTitle3 = string.Format("//*[@id='gs_ccl']/div[{0}]/div/h3/text()[2]", i);
-                        article.Title = doc.DocumentNode.SelectSingleNode(xPathTitle1).InnerText + doc.DocumentNode.SelectSingleNode(xPathTitle2).InnerText + doc.DocumentNode.SelectSingleNode(xPathTitle3).InnerText;
+                        string xPathTitleCheck = string.Format("//*[@id='gs_ccl']/div[{0}]/div/h3", i);
+                        string xPathSpanNode = string.Format("//*[@id='gs_ccl']/div[{0}]/div/h3/span", i);
+                        HtmlNode titleMatchNode = doc.DocumentNode.SelectSingleNode(xPathTitleCheck);
+                        HtmlNode spanNode = doc.DocumentNode.SelectSingleNode(xPathSpanNode);
+                        titleMatchNode.RemoveChild(spanNode);
+                        article.Title = titleMatchNode.InnerText;
 
                         string xPathInfo = string.Format("//*[@id='gs_ccl']/div[{0}]/div/div[1]", i);
                         article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
@@ -105,7 +115,11 @@ namespace BootApp.Controllers
                         article.Reference = "This article does not have a reference";
 
                         string xPathCitiations = string.Format("//*[@id='gs_ccl']/div[{0}]/div/div[2]/a[1]", i);
-                        article.Citiations = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        string citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        if (citiationsCheck.StartsWith("Цитируется"))
+                            article.Citiations = citiationsCheck;
+                        else
+                            article.Citiations = "Эта статья нигде не цитируется. ";
 
                         articles.Insert(i - 1, article);
                     }
@@ -117,13 +131,14 @@ namespace BootApp.Controllers
 
         public ActionResult SearchOnScholar()
         {
+            List<ScholarArticle> articles = new List<ScholarArticle>();
             return View("SearchOnScholar", articles);
         }
 
         [HttpPost]
         public ActionResult SearchOnScholar(string Query)
         {
-            articles = GetScholarArticlesByQuery(Query);
+            List<ScholarArticle> articles = GetScholarArticlesByQuery(Query);
             return View("SearchOnScholar", articles);
         }
     }
