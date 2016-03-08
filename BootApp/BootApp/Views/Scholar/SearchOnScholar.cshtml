@@ -1,0 +1,61 @@
+﻿@model List<BootApp.Models.ScholarArticle>
+
+@{
+    ViewBag.Title = "SearchOnScholar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .container {
+        font-size: medium;
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <form class="form-horizontal" method="post">
+                <div class="input-group">
+                    <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск на Google.Scholar">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Поиск</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Count != 0)
+    {
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">
+                <h3>Список статей</h3>
+            </div>
+        </div>
+        foreach (var art in Model)
+        {
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">@art.Title</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">@art.Info</li>
+                        <li class="list-group-item">@art.Citiations</li>
+                        <li class="list-group-item">@art.Reference</li>
+                    </ul>
+                </div>
+            </div>
+        }
+    }
+
+</div>

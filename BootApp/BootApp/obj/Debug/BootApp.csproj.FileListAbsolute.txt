@@ -184,3 +184,6 @@ D:\Biblio2015\BootApp\BootApp\obj\Debug\BootApp.csprojResolveAssemblyReference.c
 D:\Biblio2015\BootApp\BootApp\obj\Debug\BootApp.dll
 D:\Biblio2015\BootApp\BootApp\obj\Debug\BootApp.pdb
 D:\Biblio2015\BootApp\BootApp\bin\Newtonsoft.Json.xml
+D:\Biblio2015\BootApp\BootApp\bin\HtmlAgilityPack.dll
+D:\Biblio2015\BootApp\BootApp\bin\HtmlAgilityPack.pdb
+D:\Biblio2015\BootApp\BootApp\bin\HtmlAgilityPack.xml
