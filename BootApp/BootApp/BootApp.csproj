@@ -157,6 +157,7 @@
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\UsersArticle.cs" />
+    <Compile Include="ParseMethod\ParseMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
