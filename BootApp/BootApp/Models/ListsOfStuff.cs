@@ -17,6 +17,8 @@ namespace BootApp.Models
         public string Journal { get; set; }
         public string Publisher{ get; set; }
         public string Note { get; set; }
+        public List<ScholarArticle> ScholarArt { get; set; }
+
         AppContext db = new AppContext();
         public List<Group> GroupsByUserName (string name)
         {

@@ -11,6 +11,5 @@ namespace BootApp.Models
         public string Info { get; set; }
         public string Citiations { get; set; }
         public string Reference { get; set; }
-
     }
 }
