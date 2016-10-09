@@ -116,7 +116,7 @@ namespace BootApp.Parsing
         /// <param name="articleInfo"></param>
         /// <param name="title"></param>
         /// <returns></returns>
-        private string FormBibTeXName(string articleInfo, string title)
+        public string FormBibTeXName(string articleInfo, string title)
         {
             string authors = GetAuthors(articleInfo);
             string year = GetYear(articleInfo);

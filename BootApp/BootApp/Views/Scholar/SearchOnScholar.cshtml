@@ -42,12 +42,11 @@
                 <h3>Список статей</h3>
             </div>
         </div>
-        //foreach (var art in Model.ScholarArt)
-        for (int i = 0; i < Model.ScholarArt.Count; i++)
+        foreach (var art in Model.ScholarArt)
         {
-            var art = Model.ScholarArt.ElementAt(i);
+            //var art = Model.ScholarArt.ElementAt(i);
 
-            using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
+            //using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
             {
                 <div class="panel panel-info">
                     <div class="panel-heading">
@@ -58,10 +57,27 @@
                             <li class="list-group-item">@art.Info</li>
                             <li class="list-group-item">@art.Citiations</li>
                             <a class="list-group-item" name="@art.Reference" href="@art.Reference">@art.Reference</a>
-                            <input type="text" name="title" value="@art.Title" hidden="true" />
-                            <input type="text" name="info" value="@art.Info" hidden="true" />
-                            <input type="text" name="reference" value="@art.Reference" hidden="true" />
-                            <input type="submit" value="Добавить статью"/>
+                            <span class="input-group-btn">
+                                @if (Request.IsAuthenticated)
+                                {
+                                    using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
+                                    {
+                                        <input type="text" name="title" value="@art.Title" hidden="true" />
+                                        <input type="text" name="info" value="@art.Info" hidden="true" />
+                                        <input type="text" name="reference" value="@art.Reference" hidden="true" />
+                                        <input type="text" name="username" value="@User.Identity.Name" hidden="true" />
+                                        <button type="submit" class="btn btn-default">Добавить статью</button>
+                                    }
+
+                                }
+                                @using (Html.BeginForm("DownloadBibTeX", "Scholar", FormMethod.Post))
+                                {
+                                    <input type="text" name="title" value="@art.Title" hidden="true" />
+                                    <input type="text" name="info" value="@art.Info" hidden="true" />
+                                    <input type="text" name="reference" value="@art.Reference" hidden="true" />
+                                    <button type="submit" class="btn btn-default">Скачать BibTeX</button>
+                                }
+                            </span>
                         </ul>
                     </div>
                 </div>
