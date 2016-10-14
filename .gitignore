@@ -3,17 +3,11 @@
 ###################
 *.com
 *.class
-*.dll
 *.exe
 *.pdb
 *.dll.config
 *.cache
 *.suo
-# Include dlls if they’re in the NuGet packages directory
-!/packages/*/lib/*.dll
-!/packages/*/lib/*/*.dll
-# Include dlls if they're in the CommonReferences directory
-!*CommonReferences/*.dll
 ####################
 # VS Upgrade stuff #
 ####################
@@ -22,7 +16,6 @@ _UpgradeReport_Files/
 ###############
 # Directories #
 ###############
-bin/
 obj/
 TestResults/
 ###################
@@ -58,7 +51,6 @@ TestResults/
 ehthumbs.db
 Icon?
 Thumbs.db
-[Bb]in
 [Oo]bj
 [Tt]est[Rr]esults
 *.suo
@@ -69,7 +61,6 @@ packages
 NuGet.exe
 _[Ss]cripts
 *.exe
-*.dll
 *.nupkg
 *.ncrunchsolution
 *.dot[Cc]over
