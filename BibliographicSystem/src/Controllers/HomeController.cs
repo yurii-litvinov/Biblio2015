@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -9,120 +10,90 @@ namespace BibliographicSystem.Controllers
 {
     public class HomeController : Controller
     {
-        AppContext db = new AppContext();
-        List<Article> list = new List<Article>();
-       
+        private readonly AppContext db = new AppContext();
+        private List<Article> list = new List<Article>();
+
         //
         // GET: /Home/
         [HttpGet]
         public ActionResult Index()
         {
-            ListsOfStuff list1 = new ListsOfStuff();
-            list1.wrongDate = false;
-            list1.wrongFile = false;
-            return View(list1);
+            var newList = new ListsOfStuff
+            {
+                wrongDate = false,
+                wrongFile = false
+            };
+            return View(newList);
         }
 
-        public ActionResult About()
-        {
-            return View();
-        }
+        public ActionResult About() => View();
 
-        public ActionResult CreateGroup()
-        {
-            return View();
-        }
+        public ActionResult CreateGroup() => View();
 
-        public ActionResult AddArticleToGroup(int id)
-        {
-            AddingClass a = new AddingClass { UserName = User.Identity.Name, GroupId = id };
-            return View(a);
-        }
+        public ActionResult AddArticleToGroup(int id) =>
+            View(new AddingClass { UserName = User.Identity.Name, GroupId = id });
 
         [HttpPost]
         public ActionResult AddArticleToGroup(int idGroup, int idArticle)
         {
             db.Articles.Find(idArticle).GroupId = idGroup;
             db.SaveChanges();
-            AddingClass a = new AddingClass { UserName = User.Identity.Name, GroupId = idGroup };
+            var a = new AddingClass { UserName = User.Identity.Name, GroupId = idGroup };
             return View("AddArticleToGroup", a);
         }
 
         [HttpPost]
-        public ActionResult CreateGroup(string GroupName, string Theme)
+        public ActionResult CreateGroup(string groupName, string theme)
         {
-            if (GroupName == null) return View();
-            Group g = new Group {GroupName = GroupName, Theme = Theme};
-            db.Groups.Add(g);
+            if (groupName == null)
+                return View();
+            var group = new Group { GroupName = groupName, Theme = theme };
+            db.Groups.Add(group);
             db.SaveChanges();
-            UserInGroup ug = new UserInGroup {UserName = User.Identity.Name, GroupId = g.GroupId};
-            db.UserInGroups.Add(ug);
+            db.UserInGroups.Add(new UserInGroup { UserName = User.Identity.Name, GroupId = group.GroupId });
             db.SaveChanges();
             return View("Finish");
         }
 
-        public ActionResult GroupList()
-        {
-            return View(db.Groups.ToList());
-        }
+        public ActionResult GroupList() => View(db.Groups.ToList());
 
         [HttpPost]
-        public ActionResult GroupList(string Search)
-        {
-            List<Group> list = db.SearchGroupList(Search);
-            return View("GroupList", list);
-        }
+        public ActionResult GroupList(string search) => View("GroupList", db.SearchGroupList(search));
 
-        public ActionResult Details(int id)
-        {
-            Article a = db.Articles.Find(id);
-            return View(a);
-        }
+        public ActionResult Details(int id) => View(db.Articles.Find(id));
 
         [HttpPost]
-        public ActionResult Details(int ArticleId, int ToMakeChoise)
+        public ActionResult Details(int articleId, int toMakeChoise)
         {
-                db.Articles.Remove(db.Articles.Find(ArticleId));
-                db.SaveChanges();
-                return View("MainPage", db.Articles.ToList());
+            db.Articles.Remove(db.Articles.Find(articleId));
+            db.SaveChanges();
+            return View("MainPage", db.Articles.ToList());
         }
 
-        public ActionResult CorrectArticle(int id)
-        {
-            return View(db.Articles.Find(id));
-        }
+        public ActionResult CorrectArticle(int id) => View(db.Articles.Find(id));
 
         [HttpPost]
-        public ActionResult CorrectArticle(int ArticleId, string ArticleName, string Author, string TagList, string Year, string Publisher, string Journal, string Note)
+        public ActionResult CorrectArticle(int articleId, string articleName, string author, string tagList, string year, string publisher, string journal, string note)
         {
-            Article a = db.Articles.Find(ArticleId);
-            List<string> list = StringToList(TagList);
-            List<Tag> lT = new List<Tag>();
-            for (int i = 0; i < list.Count; i++)
+            var a = db.Articles.Find(articleId);
+            var newList = StringToList(tagList);
+            var listTag = new List<Tag>();
+            foreach (var tag in newList)
             {
-                Tag t = new Tag { TagName = list[i] };
-                //lT.Add(t);
-                //db.Tags.Add(t);
-                addTag(t);
+                AddTag(new Tag { TagName = tag });
                 db.SaveChanges();
             }
-            for (int i = 0; i < list.Count; i++)
+            foreach (var tag in newList)
             {
-                foreach (var t in db.Tags.ToList())
-                {
-                    if (t.TagName == list[i])
-                    {
-                        lT.Add(t);
-                    }
-                }
+                listTag.AddRange(db.Tags.ToList().Where(t => t.TagName == tag));
             }
-            a.author = Author;
-            a.journal = Journal;
-            a.note = Note;
-            a.publisher = Publisher;
-            a.title = ArticleName;
-            a.year = Year;
-            a.Tags = lT;
+            a.author = author;
+            a.journal = journal;
+            a.note = note;
+            a.publisher = publisher;
+            a.title = articleName;
+            a.year = year;
+            a.Tags = listTag;
             CreateBibFile(a);
             db.SaveChanges();
             return View("MainPage", db.Articles.ToList());
@@ -130,290 +101,227 @@ namespace BibliographicSystem.Controllers
 
         public ActionResult MainPage()
         {
-            Group group = db.Groups.Find(1);
+            var group = db.Groups.Find(1);
             CreateBibFile(group);
             return View(db.Articles.ToList());
         }
 
         [HttpPost]
-        public ActionResult MainPage(string Search)
+        public ActionResult MainPage(string search)
         {
-            if(Search == "")
-            {
+            if (search == "")
                 return View("MainPage", db.Articles.ToList());
-            }
-            list = db.SearchByTag(Search);
-            //return RedirectToAction("SearchResult", list);
+            list = db.SearchByTag(search);
             return View("MainPage", list);
         }
-
-        /*public ActionResult Search(string s)
-        {
-            if (s == "")
-            {
-                return View("MainPage", db.Articles.ToList());
-            }
-            list = db.SearchByTag(s);
-            //return RedirectToAction("SearchResult", list);
-            return View("MainPage", list);
-        }*/
 
         public ActionResult GroupPage(int id)
         {
-            Group g = db.Groups.Find(id);
-            g.Articles = db.ArticleByGroup(id);
-            g.Users = db.UsersByGroup(id);
-            return View(g);
+            var group = db.Groups.Find(id);
+            group.Articles = db.ArticleByGroup(id);
+            group.Users = db.UsersByGroup(id);
+            return View(group);
         }
-
-       /* public ActionResult SearchResult()
-        {
-            return View(list);
-        }*/
 
         public FileResult GetFile(int id)
         {
-            Article a = db.Articles.Find(id);
-            string filePath = "~/Files/" + a.Path;
-            string fileType = "application/pdf";
-            string fileName = a.Path;
+            var a = db.Articles.Find(id);
+            var filePath = "~/Files/" + a.Path;
+            var fileType = "application/pdf";
+            var fileName = a.Path;
             return File(filePath, fileType, fileName);
         }
 
         public FileResult GetBibFile(int id)
         {
-            Article a = db.Articles.Find(id);
-            string filePath = "~/BibFiles/" + a.title.Split('.') + ".bib";
-            //string fileType = "BIB";
-            string fileName = a.title.Split('.') + ".bib";
-
+            var a = db.Articles.Find(id);
+            var filePath = "~/BibFiles/" + a.title.Split('.') + ".bib";
+            var fileName = a.title.Split('.') + ".bib";
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
-        /*public FileResult GetBibFile1(string username)
+        public FileResult Kek(int id)
         {
-            string fileName = CreateBibFile(username);
-            string filePath = "~/BibFiles/" + fileName;
-            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }
-
-        public FileResult GetBibFile(Group group)
-        {
-            string fileName = CreateBibFile(group);
-            string filePath = "~/BibFiles/" + fileName;
-            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }*/
-
-        public FileResult kek(int id)
-        {
-            Group group = db.Groups.Find(id);
-            string name = group.GroupName;
+            var group = db.Groups.Find(id);
             CreateBibFile(group);
-
-            string fileName = group.GroupName + ".bib";
-            string filePath = "~/BibFiles/" + fileName;
+            var fileName = group.GroupName + ".bib";
+            var filePath = "~/BibFiles/" + fileName;
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-
         }
 
-        public FileResult pls()
+        public FileResult Pls()
         {
-            string name = User.Identity.Name;
+            var name = User.Identity.Name;
             CreateBibFile(name);
-            string fileName = name + ".bib";
-            string filePath = "~/BibFiles/" + fileName;
+            var fileName = name + ".bib";
+            var filePath = "~/BibFiles/" + fileName;
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
         public string CreateBibFile(Article art)
         {
-            string directory = AppDomain.CurrentDomain.BaseDirectory;
-            string name = art.title + ".bib";
-            string path = directory + "/BibFiles/" + name;
-            System.IO.StreamWriter textFile = new System.IO.StreamWriter(@path);
+            var directory = AppDomain.CurrentDomain.BaseDirectory;
+            var name = art.title + ".bib";
+            var path = directory + "/BibFiles/" + name;
+            var textFile = new StreamWriter(path);
             AddBib(textFile, art);
             textFile.Close();
-
             return name;
         }
 
         public string CreateBibFile(string username)
         {
-            string directory = AppDomain.CurrentDomain.BaseDirectory;
-            string name = username + ".bib";
-            string path = directory + "/BibFiles/" + name;
-            System.IO.StreamWriter textFile = new System.IO.StreamWriter(@path);
-            foreach (var art in db.Articles.ToList())
+            var directory = AppDomain.CurrentDomain.BaseDirectory;
+            var name = username + ".bib";
+            var path = directory + "/BibFiles/" + name;
+            var textFile = new StreamWriter(path);
+            var x = db.Articles.ToList();
+            foreach (var art in x)
             {
                 if (art.UserName == username)
-                {
                     AddBib(textFile, art);
-                }
             }
             textFile.Close();
             return name;
-
         }
 
         public string CreateBibFile(Group group)
         {
-            string directory = AppDomain.CurrentDomain.BaseDirectory;
-            string name = group.GroupName + ".bib";
-            string path = directory + "/BibFiles/" + name;
-            System.IO.StreamWriter textFile = new System.IO.StreamWriter(@path);
-            List<Article> list = db.ArticleByGroup(group.GroupId);
-            foreach(var art in list)
+            var directory = AppDomain.CurrentDomain.BaseDirectory;
+            var name = group.GroupName + ".bib";
+            var path = directory + "/BibFiles/" + name;
+            var textFile = new StreamWriter(path);
+            var articles = db.ArticleByGroup(group.GroupId);
+            foreach (var art in articles)
             {
                 AddBib(textFile, art);
             }
             textFile.Close();
-
             return name;
         }
 
-        private void AddBib(System.IO.StreamWriter textFile, Article art)
+        private void AddBib(TextWriter textFile, Article art)
         {
-            if (art.Type == "Статья")
+            switch (art.Type)
             {
-                textFile.WriteLine("@ARTICLE{");
-            }
-            else if (art.Type == "Книга")
-            {
-                textFile.WriteLine("@BOOK{");
+                case "Статья":
+                    textFile.WriteLine("@ARTICLE{");
+                    break;
+                case "Книга":
+                    textFile.WriteLine("@BOOK{");
+                    break;
             }
             textFile.WriteLine("author = {" + art.author + "},");
             textFile.WriteLine("title = {«" + art.title + "»},");
+
             if (art.publisher != "")
-            {
                 textFile.WriteLine("publisher = {" + art.publisher + "},");
-            }
-          
+
             if (art.journal != "")
-            {
                 textFile.WriteLine("journal = {" + art.journal + "},");
-            }
+
             if (art.year != "")
-            {
                 textFile.WriteLine("year = {" + art.year + "},");
-            }
+
             textFile.WriteLine("note = {" + art.note + "},");
             textFile.WriteLine("}");
-
         }
 
         [HttpPost]
-        public ActionResult Index(IEnumerable<HttpPostedFileBase> fileUpload, string ArticleName, string TagList, 
-            string Author, string Year, string Journal, string Publisher, string Note)
+        public ActionResult Index(IEnumerable<HttpPostedFileBase> fileUpload, string articleName, string tagList,
+            string author, string year, string journal, string publisher, string note)
         {
-            if (ArticleName == "") 
-            { 
-                ListsOfStuff list1 = new ListsOfStuff();
-                return View(list1); 
-            }
-            if ((DateTime.Now.Year <= Convert.ToInt32(Year)) || (Convert.ToInt32(Year) <= 1500))
+            if (articleName == "")
+                return View(new ListsOfStuff());
+
+            if ((DateTime.Now.Year <= Convert.ToInt32(year)) || (Convert.ToInt32(year) <= 1500))
             {
-                ListsOfStuff list1 = new ListsOfStuff();
-                list1.ArticleName = ArticleName;
-                list1.Author = Author;
-                list1.Journal = Journal;
-                list1.Note = Note;
-                list1.Publisher = Publisher;
-                list1.TagList = TagList;
-                list1.wrongDate = true;
-                return View(list1);
+                return View(new ListsOfStuff
+                {
+                    ArticleName = articleName,
+                    Author = author,
+                    Journal = journal,
+                    Note = note,
+                    Publisher = publisher,
+                    TagList = tagList,
+                    wrongDate = true
+                });
             }
             foreach (var file in fileUpload)
             {
-                string filename = "";
+                var filename = "";
                 if (file != null)
                 {
-                    string allowFormat = "pdf";
-                    var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+                    const string allowFormat = "pdf";
+                    var fileExt = Path.GetExtension(file.FileName)?.Substring(1);
                     if (fileExt != allowFormat)
                     {
-                        ListsOfStuff list1 = new ListsOfStuff();
-                        list1.ArticleName = ArticleName;
-                        list1.Author = Author;
-                        list1.Journal = Journal;
-                        list1.Note = Note;
-                        list1.Publisher = Publisher;
-                        list1.TagList = TagList;
-                        list1.Year = Year;
-                        list1.wrongFile = true;
-                        return View(list1);
+                        return View(new ListsOfStuff
+                        {
+                            ArticleName = articleName,
+                            Author = author,
+                            Journal = journal,
+                            Note = note,
+                            Publisher = publisher,
+                            TagList = tagList,
+                            Year = year,
+                            wrongFile = true
+                        });
                     }
-                    //string path = AppDomain.CurrentDomain.BaseDirectory + "UploadedFiles/";
-                    filename = System.IO.Path.GetFileName(file.FileName);
+                    filename = Path.GetFileName(file.FileName);
                     file.SaveAs(Server.MapPath("~/Files/" + filename));
                 }
-                List<string> list = StringToList(TagList);
-                List<Tag> lT = new List<Tag>();
-                for (int i = 0; i < list.Count; i++)
+                var newList = StringToList(tagList);
+                var tags = new List<Tag>();
+                foreach (var tag in newList)
                 {
-                    Tag t = new Tag { TagName = list[i] };
-                    //lT.Add(t);
-                    //db.Tags.Add(t);
-                    addTag(t);
+                    AddTag(new Tag { TagName = tag });
                     db.SaveChanges();
                 }
-                for (int i = 0; i < list.Count; i++)
+                foreach (var item in newList)
                 {
-                    foreach(var t in db.Tags.ToList())
-                    {
-                        if (t.TagName == list[i])
-                        {
-                            lT.Add(t);
-                        }
-                    }
+                    tags.AddRange(db.Tags.ToList().Where(t => t.TagName == item));
                 }
-                
-                string tt = Request.Form["TypeT"].ToString();
-                int tg = Convert.ToInt32(Request.Form["GroupT"].ToString());
-                
-                Article a1 = new Article { title = ArticleName, Path = filename, Tags = lT, author = Author, Type = tt,  journal = Journal, note = Note, publisher = Publisher, year = Year, UserName = User.Identity.Name, GroupId = tg };
+
+                var type = Request.Form["TypeT"];
+                var groupId = Convert.ToInt32(Request.Form["GroupT"]);
+
+                var a1 = new Article { title = articleName, Path = filename, Tags = tags, author = author, Type = type, journal = journal, note = note, publisher = publisher, year = year, UserName = User.Identity.Name, GroupId = groupId };
                 db.Articles.Add(a1);
                 CreateBibFile(a1);
                 db.SaveChanges();
-                UsersArticle ua = new UsersArticle { UserName = User.Identity.Name, ArticleId = a1.ArticleId};
-                db.UsersArticles.Add(ua);
+                var usersArticle = new UsersArticle { UserName = User.Identity.Name, ArticleId = a1.ArticleId };
+                db.UsersArticles.Add(usersArticle);
                 db.SaveChanges();
             }
-
             return RedirectToAction("Finish");
         }
 
-        public ActionResult ErrorOccured()
-        {
-            return View();
-        }
+        public ActionResult ErrorOccured() => View();
 
-        public ActionResult Finish()
-        {
-            return View();
-        }
+        public ActionResult Finish() => View();
 
-        public List<string> StringToList(string s)
+        public List<string> StringToList(string str)
         {
-            List<string> list = new List<string>();
-            int count = s.Length;
-            string u = "";
-            for (int i = 0; i < count; i++)
+            var newList = new List<string>();
+            var u = "";
+            foreach (var t in str)
             {
-                if (s[i] != ' ')
+                if (t != ' ')
                 {
-                    u = u + s[i];
+                    u = u + t;
                 }
                 else
                 {
-                    list.Add(u);
+                    newList.Add(u);
                     u = "";
                 }
             }
-            list.Add(u);
-            return list;
+            newList.Add(u);
+            return newList;
         }
 
-        public void addTag(Tag tag)
+        public void AddTag(Tag tag)
         {
             bool add = true;
             foreach (var t in db.Tags.ToList())
@@ -422,45 +330,40 @@ namespace BibliographicSystem.Controllers
                     add = false;
             }
             if (add)
-            {
                 db.Tags.Add(tag);
-            }
         }
 
-        
-        public void WideIn(int Id)
-        {
-            db.AddUserInGroup(Id, User.Identity.Name);
-        }
+
+        public void WideIn(int id) => db.AddUserInGroup(id, User.Identity.Name);
 
         [HttpPost]
-        public ActionResult GroupPage(string Wade, int GroupId)
+        public ActionResult GroupPage(string wade, int groupId)
         {
-            if (Wade == "-1")
+            switch (wade)
             {
-                UserInGroup u = new UserInGroup();
-                foreach(var g in db.UserInGroups.ToList())
-                {
-                    if (g.UserName == User.Identity.Name && g.GroupId == GroupId)
-                        u = g;
-                }
-                db.UserInGroups.Remove(u);
-                db.SaveChanges();
+                case "-1":
+                    var user = new UserInGroup();
+                    foreach (var group in db.UserInGroups.ToList())
+                    {
+                        if (group.UserName == User.Identity.Name && group.GroupId == groupId)
+                            user = group;
+                    }
+                    db.UserInGroups.Remove(user);
+                    db.SaveChanges();
+                    break;
+                case "-2":
+                    db.AddUserInGroup(groupId, User.Identity.Name);
+                    db.SaveChanges();
+                    break;
+                default:
+                    var a = db.Articles.Find(Convert.ToInt32(wade));
+                    a.GroupId = 0;
+                    db.SaveChanges();
+                    break;
             }
-            else if (Wade == "-2")
-            {
-                db.AddUserInGroup(GroupId, User.Identity.Name);
-                db.SaveChanges();
-            }
-            else
-            {
-                Article a = db.Articles.Find(Convert.ToInt32(Wade));
-                a.GroupId = 0;
-                db.SaveChanges();
-            }
-            Group m = db.Groups.Find(GroupId);
-            m.Articles = db.ArticleByGroup(GroupId);
-            m.Users = db.UsersByGroup(GroupId);
+            var m = db.Groups.Find(groupId);
+            m.Articles = db.ArticleByGroup(groupId);
+            m.Users = db.UsersByGroup(groupId);
             return View("GroupPage", m);
         }
 
@@ -469,6 +372,5 @@ namespace BibliographicSystem.Controllers
             db.Dispose();
             base.Dispose(disposing);
         }
-
     }
 }

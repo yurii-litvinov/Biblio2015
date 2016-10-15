@@ -9,10 +9,9 @@
 <br />
 @if (Request.IsAuthenticated)
 {
-    string s = "";
-    foreach (var t in Model.Tags) { s = s + t.TagName + " "; }
+    var s = Model.Tags.Aggregate("", (current, t) => current + t.TagName + " ");
 
-<div class="container">
+    <div class="container">
     <div class="row">
         <h2>Редактирование описания</h2>
     </div>
