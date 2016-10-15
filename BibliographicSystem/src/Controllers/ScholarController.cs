@@ -37,11 +37,11 @@ namespace BibliographicSystem.Controllers
 
             var art = new Article
             {
-                title = title,
-                author = authors,
-                year = year,
-                journal = journal,
-                publisher = publisher,
+                Title = title,
+                Author = authors,
+                Year = year,
+                Journal = journal,
+                Publisher = publisher,
                 Type = "Article",
                 UserName = username
             };

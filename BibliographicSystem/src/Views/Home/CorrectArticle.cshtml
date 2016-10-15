@@ -19,19 +19,19 @@
         <div class="col-md-6">
             <form class="form-horizontal" method="post">
                 <textarea class="sr-only" name="ArticleId">@Model.ArticleId</textarea>
-                <input type="text" name="ArticleName" class="form-control" placeholder="Название" value="@Model.title"/> <br />
-                <input type="text" name="Author" class="form-control" placeholder="Автор" value="@Model.author" /><br />
+                <input type="text" name="ArticleName" class="form-control" placeholder="Название" value="@Model.Title"/> <br />
+                <input type="text" name="Author" class="form-control" placeholder="Автор" value="@Model.Author" /><br />
                 <input type="text" name="TagList" class="form-control" placeholder="Список тэгов" value="@s" /><br />
-                <input type="text" name="Year" class="form-control" placeholder="Год издания" value="@Model.year" /><br />
-                @if (Model.journal == "")
+                <input type="text" name="Year" class="form-control" placeholder="Год издания" value="@Model.Year" /><br />
+                @if (Model.Journal == "")
                 {
-                    <input type="text" id="Publisher" name="Publisher" class="form-control" placeholder="Издатель" value="@Model.publisher"/><br />
+                    <input type="text" id="Publisher" name="Publisher" class="form-control" placeholder="Издатель" value="@Model.Publisher"/><br />
                 }
-                @if (Model.publisher == "")
+                @if (Model.Publisher == "")
                 {
-                    <input type="text" id="Journal" name="Journal" class="form-control" placeholder="Название журнала" value="@Model.journal" /><br />
+                    <input type="text" id="Journal" name="Journal" class="form-control" placeholder="Название журнала" value="@Model.Journal" /><br />
                 }
-                <textarea name="Note" class="form-control" placeholder="Описание" >@Model.note</textarea><br />
+                <textarea name="Note" class="form-control" placeholder="Описание" >@Model.Note</textarea><br />
                 <button class="btn btn-primary" type="submit">Обновить</button>
             </form>
         </div>

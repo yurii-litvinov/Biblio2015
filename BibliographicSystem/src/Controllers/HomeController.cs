@@ -20,8 +20,8 @@ namespace BibliographicSystem.Controllers
         {
             var newList = new ListsOfStuff
             {
-                wrongDate = false,
-                wrongFile = false
+                WrongDate = false,
+                WrongFile = false
             };
             return View(newList);
         }
@@ -87,12 +87,12 @@ namespace BibliographicSystem.Controllers
             {
                 listTag.AddRange(db.Tags.ToList().Where(t => t.TagName == tag));
             }
-            a.author = author;
-            a.journal = journal;
-            a.note = note;
-            a.publisher = publisher;
-            a.title = articleName;
-            a.year = year;
+            a.Author = author;
+            a.Journal = journal;
+            a.Note = note;
+            a.Publisher = publisher;
+            a.Title = articleName;
+            a.Year = year;
             a.Tags = listTag;
             CreateBibFile(a);
             db.SaveChanges();
@@ -135,8 +135,8 @@ namespace BibliographicSystem.Controllers
         public FileResult GetBibFile(int id)
         {
             var a = db.Articles.Find(id);
-            var filePath = "~/BibFiles/" + a.title.Split('.') + ".bib";
-            var fileName = a.title.Split('.') + ".bib";
+            var filePath = "~/BibFiles/" + a.Title.Split('.') + ".bib";
+            var fileName = a.Title.Split('.') + ".bib";
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
@@ -161,7 +161,7 @@ namespace BibliographicSystem.Controllers
         public string CreateBibFile(Article art)
         {
             var directory = AppDomain.CurrentDomain.BaseDirectory;
-            var name = art.title + ".bib";
+            var name = art.Title + ".bib";
             var path = directory + "/BibFiles/" + name;
             var textFile = new StreamWriter(path);
             AddBib(textFile, art);
@@ -211,19 +211,19 @@ namespace BibliographicSystem.Controllers
                     textFile.WriteLine("@BOOK{");
                     break;
             }
-            textFile.WriteLine("author = {" + art.author + "},");
-            textFile.WriteLine("title = {«" + art.title + "»},");
+            textFile.WriteLine("author = {" + art.Author + "},");
+            textFile.WriteLine("title = {«" + art.Title + "»},");
 
-            if (art.publisher != "")
-                textFile.WriteLine("publisher = {" + art.publisher + "},");
+            if (art.Publisher != "")
+                textFile.WriteLine("publisher = {" + art.Publisher + "},");
 
-            if (art.journal != "")
-                textFile.WriteLine("journal = {" + art.journal + "},");
+            if (art.Journal != "")
+                textFile.WriteLine("journal = {" + art.Journal + "},");
 
-            if (art.year != "")
-                textFile.WriteLine("year = {" + art.year + "},");
+            if (art.Year != "")
+                textFile.WriteLine("year = {" + art.Year + "},");
 
-            textFile.WriteLine("note = {" + art.note + "},");
+            textFile.WriteLine("note = {" + art.Note + "},");
             textFile.WriteLine("}");
         }
 
@@ -244,7 +244,7 @@ namespace BibliographicSystem.Controllers
                     Note = note,
                     Publisher = publisher,
                     TagList = tagList,
-                    wrongDate = true
+                    WrongDate = true
                 });
             }
             foreach (var file in fileUpload)
@@ -265,7 +265,7 @@ namespace BibliographicSystem.Controllers
                             Publisher = publisher,
                             TagList = tagList,
                             Year = year,
-                            wrongFile = true
+                            WrongFile = true
                         });
                     }
                     filename = Path.GetFileName(file.FileName);
@@ -286,7 +286,8 @@ namespace BibliographicSystem.Controllers
                 var type = Request.Form["TypeT"];
                 var groupId = Convert.ToInt32(Request.Form["GroupT"]);
 
-                var a1 = new Article { title = articleName, Path = filename, Tags = tags, author = author, Type = type, journal = journal, note = note, publisher = publisher, year = year, UserName = User.Identity.Name, GroupId = groupId };
+                var a1 = new Article { Title = articleName, Path = filename, Tags = tags, Author = author, Type = type,
+                    Journal = journal, Note = note, Publisher = publisher, Year = year, UserName = User.Identity.Name, GroupId = groupId };
                 db.Articles.Add(a1);
                 CreateBibFile(a1);
                 db.SaveChanges();
