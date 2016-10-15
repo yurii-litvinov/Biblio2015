@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
-using BootApp.Models;
-using BootApp.Parsing;
+using BibliographicSystem.Models;
 
 namespace BibliographicSystem.Controllers
 {
@@ -25,7 +24,7 @@ namespace BibliographicSystem.Controllers
         [HttpPost]
         public ActionResult SearchOnScholar(string Query)
         {
-            ParseMethod parsing = new ParseMethod();
+            ParseMethod.ParseMethod parsing = new ParseMethod.ParseMethod();
             ListsOfStuff lists = new ListsOfStuff();
             lists.ScholarArt = parsing.GetScholarArticlesByQuery(Query);
             return View("SearchOnScholar", lists);
@@ -34,7 +33,7 @@ namespace BibliographicSystem.Controllers
         [HttpPost]
         public ActionResult AddArticle(string title, string info, string reference, string username)
         {
-            ParseMethod parser = new ParseMethod();
+            ParseMethod.ParseMethod parser = new ParseMethod.ParseMethod();
             string authors = parser.GetAuthors(info);
             string year = parser.GetYear(info);
             string journal = parser.GetJournal(info);
@@ -52,7 +51,7 @@ namespace BibliographicSystem.Controllers
         [HttpPost]
         public ActionResult DownloadBibTeX(string title, string info, string reference)
         {
-            ParseMethod parser = new ParseMethod();
+            ParseMethod.ParseMethod parser = new ParseMethod.ParseMethod();
             string path = @"c:\bibFiles";
             //string path = directory + "\\BibFiles";
             string bibDescr = parser.FormBibTeX(info, title, reference);

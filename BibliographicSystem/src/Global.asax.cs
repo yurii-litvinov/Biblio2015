@@ -1,5 +1,4 @@
-﻿using BootApp.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using BibliographicSystem;
+using BibliographicSystem.Models;
 
 namespace BootApp
 {
@@ -25,7 +25,7 @@ namespace BootApp
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            Database.SetInitializer<BootApp.Models.AppContext>(null);
+            Database.SetInitializer<AppContext>(null);
         }
     }
 }

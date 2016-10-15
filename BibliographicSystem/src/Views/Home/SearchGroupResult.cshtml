@@ -1,4 +1,5 @@
-﻿@model List<BootApp.Models.Group>
+﻿@using BibliographicSystem.Models
+@model List<BibliographicSystem.Models.Group>
 
 @{
     ViewBag.Title = "SearchGroupResult";
@@ -30,7 +31,7 @@
                             <th>Подробнее</th>
                         </tr>
                     </thead>
-                    @foreach (BootApp.Models.Group b in Model)
+                    @foreach (Group b in Model)
                     {
                         <tbody>
                             <tr>

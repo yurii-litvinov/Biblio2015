@@ -1,4 +1,5 @@
-﻿@model List<BootApp.Models.Article>
+﻿@using BibliographicSystem.Models
+@model List<BibliographicSystem.Models.Article>
 
 @{
     ViewBag.Title = "SearchResult";
@@ -32,7 +33,7 @@
                         <th>Описание</th>
                     </tr>
                 </thead>
-                @foreach (BootApp.Models.Article b in Model)
+                @foreach (Article b in Model)
                 {
                     <tbody>
                         <tr>
