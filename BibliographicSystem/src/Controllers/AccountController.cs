@@ -2,7 +2,7 @@
 using System.Web.Security;
 using BootApp.Models;
 
-namespace BootApp.Controllers
+namespace BibliographicSystem.Controllers
 {
     [AllowAnonymous]
     public class AccountController : Controller

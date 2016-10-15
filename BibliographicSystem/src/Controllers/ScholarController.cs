@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Web.Mvc;
 using System.IO;
+using System.Web.Mvc;
 using BootApp.Models;
 using BootApp.Parsing;
 
-namespace BootApp.Controllers
+namespace BibliographicSystem.Controllers
 {
     public class ScholarController : Controller
     {
