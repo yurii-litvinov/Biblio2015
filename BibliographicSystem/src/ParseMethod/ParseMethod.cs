@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,7 +14,7 @@ namespace BibliographicSystem.ParseMethod
     {
         public string GetQueryUrl(string query)
         {
-            string url = "http://scholar.google.com/scholar?hl=en&q=";
+            const string url = "http://scholar.google.com/scholar?hl=en&q=";
             query = query.Replace(' ', '+');
             query = string.Concat(url, query);
             return query;
@@ -21,28 +22,22 @@ namespace BibliographicSystem.ParseMethod
 
         private string GetPageContent(string url)
         {
-            string pageContent;
             var request = (HttpWebRequest)WebRequest.Create(url);
             var response = (HttpWebResponse)request.GetResponse();
             var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("windows-1251"));
-            pageContent = streamReader.ReadToEnd();
+            var pageContent = streamReader.ReadToEnd();
             streamReader.Close();
             return pageContent;
         }
 
         public string GetAuthors(string articleInfo)
         {
-            List<string> authors = new List<string>();
-            string authorsPattern = @"[A-Z]{1,}\s{1}[A-Za-z]{1,}|[А-Я]{1,}\s{1}[А-Яа-я]{1,}";
-            Regex author = new Regex(authorsPattern);
-            MatchCollection matches = author.Matches(articleInfo);
-            foreach (Match match in matches)
-            {
-                authors.Add(match.Value);
-            }
+            var author = new Regex(@"[A-Z]{1,}\s{1}[A-Za-z]{1,}|[А-Я]{1,}\s{1}[А-Яа-я]{1,}");
+            var matches = author.Matches(articleInfo);
+            var authors = (from Match match in matches select match.Value).ToList();
 
-            string authorsString = "";
-            for (int i = 0; i < authors.Count - 1; i++)
+            var authorsString = "";
+            for (var i = 0; i < authors.Count - 1; i++)
                 authorsString += authors.ElementAt(i) + ",";
             authorsString += authors.Last();
 
@@ -51,45 +46,36 @@ namespace BibliographicSystem.ParseMethod
 
         public string GetYear(string articleInfo)
         {
-            string yearPattern = @"\d{4}";
-            Regex year = new Regex(yearPattern);
-            Match yearMatch = year.Match(articleInfo);
-            if (yearMatch.Success)
-                return yearMatch.Value; 
-            else
-                return "no info";
+            const string yearPattern = @"\d{4}";
+            var year = new Regex(yearPattern);
+            var yearMatch = year.Match(articleInfo);
+            return yearMatch.Success ? yearMatch.Value : "no info";
         }
 
         public string GetJournal(string articleInfo)
         {
-            List<int> dashRange = GetDashRange(articleInfo);
+            var dashRange = GetDashRange(articleInfo);
             if (dashRange.Last() - (dashRange.First() + 3) == 4)
                 return "no info";
-            else if (articleInfo.IndexOf("…", dashRange.First()) != -1)
+            if (articleInfo.IndexOf("…", dashRange.First(), StringComparison.Ordinal) != -1)
                 return "no info";
-            else
-            {
-                string journalPattern = @"[^,]{1,}";
-                Regex journal = new Regex(journalPattern);
-                Match journalMatch = journal.Match(articleInfo, (dashRange.First() + 3));
-                return journalMatch.Value;
-            }
+            const string journalPattern = @"[^,]{1,}";
+            var journal = new Regex(journalPattern);
+            var journalMatch = journal.Match(articleInfo, (dashRange.First() + 3));
+            return journalMatch.Value;
         }
 
         // magical "+3" here for skipping 3 positions to pass the " - " symbol sequence
         public string GetPublisher(string articleInfo)
         {
-            List<int> dashRange = GetDashRange(articleInfo);
+            var dashRange = GetDashRange(articleInfo);
             if (dashRange.Contains(-1))
                 return "no info";
-            else
-            {
-                string publisherPattern = @".{1,}";
-                Regex publisher = new Regex(publisherPattern);
-                Match publisherMatch = publisher.Match(articleInfo, (dashRange.Last() + 3));
+            const string publisherPattern = @".{1,}";
+            var publisher = new Regex(publisherPattern);
+            var publisherMatch = publisher.Match(articleInfo, (dashRange.Last() + 3));
 
-                return publisherMatch.Value;
-            }
+            return publisherMatch.Value;
         }
 
         /// <summary>
@@ -98,11 +84,11 @@ namespace BibliographicSystem.ParseMethod
         /// <param name="str"></param>
         private List<int> GetDashRange(string str)
         {
-            List<int> range = new List<int>();
-            string dashToFind = " - ";
-            int firstEntry = str.IndexOf(dashToFind);
+            var range = new List<int>();
+            const string dashToFind = " - ";
+            var firstEntry = str.IndexOf(dashToFind, StringComparison.Ordinal);
             range.Add(firstEntry);
-            range.Add(str.IndexOf(dashToFind, (firstEntry + 3)));
+            range.Add(str.IndexOf(dashToFind, firstEntry + 3, StringComparison.Ordinal));
 
             return range;
         }
@@ -116,30 +102,30 @@ namespace BibliographicSystem.ParseMethod
         /// <returns></returns>
         public string FormBibTeXName(string articleInfo, string title)
         {
-            string authors = GetAuthors(articleInfo);
-            string year = GetYear(articleInfo);
+            var authors = GetAuthors(articleInfo);
+            var year = GetYear(articleInfo);
 
-            string firstWordPattern = @"[A-Z]{1}[a-z]{1,}";
-            Regex author = new Regex(firstWordPattern);
-            Match authorMatch = author.Match(authors);
-            Regex firstWordTitle = new Regex(firstWordPattern);
-            Match titleMatch = firstWordTitle.Match(title);
-            string name = authorMatch.Value + year + titleMatch.Value;
+            const string firstWordPattern = @"[A-Z]{1}[a-z]{1,}";
+            var author = new Regex(firstWordPattern);
+            var authorMatch = author.Match(authors);
+            var firstWordTitle = new Regex(firstWordPattern);
+            var titleMatch = firstWordTitle.Match(title);
+            var name = authorMatch.Value + year + titleMatch.Value;
 
-            return name.ToLower(); ;
+            return name.ToLower();
         }
 
         public string FormBibTeX(string articleInfo, string title, string reference)
         {
             // getting needed info
-            string authors = GetAuthors(articleInfo);
-            string journal = GetJournal(articleInfo);
-            string year = GetYear(articleInfo);
-            string publisher = GetPublisher(articleInfo);
-            string name = FormBibTeXName(articleInfo, title);
+            var authors = GetAuthors(articleInfo);
+            var journal = GetJournal(articleInfo);
+            var year = GetYear(articleInfo);
+            var publisher = GetPublisher(articleInfo);
+            var name = FormBibTeXName(articleInfo, title);
 
             // forming string file, to convert it into bibtex further
-            string bibtex = "@article{" + name + ",\n" + "  title={" + title + "},\n" + "  author={";
+            var bibtex = "@article{" + name + ",\n" + "  title={" + title + "},\n" + "  author={";
             bibtex += authors + "},\n";
             if (journal != "no info")
                 bibtex += "  journal={" + journal + "},\n";
@@ -165,69 +151,61 @@ namespace BibliographicSystem.ParseMethod
         {
             // getting page content from scholar page (with given query)
             query = GetQueryUrl(query);
-            string pageContent = GetPageContent(query);
+            var pageContent = GetPageContent(query);
 
             // creating list of articles for "searhc on scholar" view
-            List<ScholarArticle> scholarArticles = new List<ScholarArticle>();
-            // creating list of articles to operate 
-            List<Article> articles = new List<Article>();
+            var scholarArticles = new List<ScholarArticle>();
 
-            HtmlDocument doc = new HtmlDocument();
+            var doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
 
-            for (int i = 1; i <= 10; i++)
+            for (var i = 1; i <= 10; i++)
             {
-                ScholarArticle article = new ScholarArticle();
-                string xPathBiblioCheck = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div[2]", i);
+                var article = new ScholarArticle();
+                var xPathBiblioCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]";
                 //*[@id="gs_ccl_results_results"]/div[1]
-                HtmlNode biblioCheck = doc.DocumentNode.SelectSingleNode(xPathBiblioCheck);
+                var biblioCheck = doc.DocumentNode.SelectSingleNode(xPathBiblioCheck);
                 if (biblioCheck != null)
                 {
 
-                    string xPathRefCheck = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div[2]/h3/a", i);
-                    HtmlNode refCheck = doc.DocumentNode.SelectSingleNode(xPathRefCheck);
+                    var xPathRefCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/h3/a";
+                    var refCheck = doc.DocumentNode.SelectSingleNode(xPathRefCheck);
 
                     // adding title of article 
-                    string xPathTitle = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div[2]/h3/a", i);
+                    var xPathTitle = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/h3/a";
                     article.Title = doc.DocumentNode.SelectSingleNode(xPathTitle).InnerText;
 
                     // adding info 
-                    string xPathInfo = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div[2]/div[1]", i);
+                    var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[1]";
                     article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
 
                     // adding reference
                     article.Reference = refCheck.GetAttributeValue("href", null);
 
                     // adding citiations amount
-                    string xPathCitiations = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div[2]/div[3]/a[1]", i);
-                    string citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                    if (citiationsCheck.StartsWith("Cited by"))
-                        article.Citiations = citiationsCheck;
-                    else
-                        article.Citiations = "No citiations for this article. ";
-                    
+                    var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[3]/a[1]";
+                    var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                    article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
+
                     scholarArticles.Insert(i - 1, article);
                 }
                 else
                 {
-                    string xPathRefCheck = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/h3/a", i);
-                    HtmlNode refCheck = doc.DocumentNode.SelectSingleNode(xPathRefCheck);
+                    var xPathRefCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3/a";
+                    var refCheck = doc.DocumentNode.SelectSingleNode(xPathRefCheck);
                     if (refCheck != null)
                     {
-                        string xPathTitle = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/h3/a", i);
+                        var xPathTitle = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3/a";
                         article.Title = doc.DocumentNode.SelectSingleNode(xPathTitle).InnerText;
 
-                        string xPathInfo = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/div[1]", i);
+                        var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
                         article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
 
                         article.Reference = refCheck.GetAttributeValue("href", null);
 
-                        string xPathCitiations = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/div[3]/a[1]", i);
-                        string citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                        if (citiationsCheck.StartsWith("Cited by"))
-                            article.Citiations = citiationsCheck;
-                        else
-                            article.Citiations = "No citiations for this article. ";
+                        var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[3]/a[1]";
+                        var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
 
                         scholarArticles.Insert(i - 1, article);
                     }
@@ -235,24 +213,21 @@ namespace BibliographicSystem.ParseMethod
                     else
                     {
                         // case, when article do not has reference, but has a tag [citiation]/[book]
-                        string xPathTitleCheck = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/h3", i);
-                        string xPathSpanNode = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/h3/span", i);
-                        HtmlNode titleMatchNode = doc.DocumentNode.SelectSingleNode(xPathTitleCheck);
-                        HtmlNode spanNode = doc.DocumentNode.SelectSingleNode(xPathSpanNode);
+                        var xPathTitleCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3";
+                        var xPathSpanNode = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3/span";
+                        var titleMatchNode = doc.DocumentNode.SelectSingleNode(xPathTitleCheck);
+                        var spanNode = doc.DocumentNode.SelectSingleNode(xPathSpanNode);
                         titleMatchNode.RemoveChild(spanNode);
                         article.Title = titleMatchNode.InnerText;
 
-                        string xPathInfo = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/div[1]", i);
+                        string xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
                         article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
 
                         article.Reference = "This article does not have a reference";
 
-                        string xPathCitiations = string.Format("//*[@id='gs_ccl_results']/div[{0}]/div/div[2]/a[1]", i);
-                        string citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                        if (citiationsCheck.StartsWith("Cited by"))
-                            article.Citiations = citiationsCheck;
-                        else
-                            article.Citiations = "No citiations for this article. ";
+                        var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]/a[1]";
+                        var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
 
                         scholarArticles.Insert(i - 1, article);
                     }

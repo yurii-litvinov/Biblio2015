@@ -5,8 +5,8 @@ namespace BibliographicSystem.Models
 {
     public class ListsOfStuff
     {
-        public bool wrongFile { get; set; }
-        public bool wrongDate { get; set; }
+        public bool WrongFile { get; set; }
+        public bool WrongDate { get; set; }
 
         public string ArticleName {get; set;}
         public string TagList {get; set;}
@@ -17,53 +17,23 @@ namespace BibliographicSystem.Models
         public string Note { get; set; }
         public List<ScholarArticle> ScholarArt { get; set; }
 
-        AppContext db = new AppContext();
-        public List<Group> GroupsByUserName (string name)
-        {
-            return db.GroupByUser(name);
-        }
+        private readonly AppContext db = new AppContext();
 
-        public List<Article> ArticlesByUser (string name)
-        {
-            List<Article> list = new List<Article>();
-            foreach (var a in db.UsersArticles.ToList())
-            {
-                if (name == a.UserName)
-                {
-                    foreach (var art in db.Articles.ToList())
-                    {
-                        if (a.ArticleId == art.ArticleId)
-                            list.Add(art);
-                    }
-                }
-            }
-            return list;
-        }
+        public List<Group> GroupsByUserName (string name) => db.GroupByUser(name);
 
-        public List<string> TypesOfArticle()
-        {
-            List<string> list = new List<string> { "Книга", "Статья", "Другой тип" };
-            return list;
-        }
+        public List<Article> ArticlesByUser (string name) =>
+            (from a in db.UsersArticles.ToList() where name == a.UserName from art in db.Articles.ToList() where a.ArticleId == art.ArticleId select art).ToList();
+
+        public List<string> TypesOfArticle() => new List<string> { "Книга", "Статья", "Другой тип" };
     }
 
     public class AddingClass
     {
         public int GroupId { get; set; }
         public string UserName { get; set; }
-        ListsOfStuff lists = new ListsOfStuff();
+        private readonly ListsOfStuff lists = new ListsOfStuff();
 
-        public List<Article> ArticlesToAdd()
-        {
-            List<Article> list = new List<Article>();
-            foreach (var l in lists.ArticlesByUser(UserName))
-            {
-                if (l.GroupId == 0)
-                {
-                    list.Add(l);
-                }
-            }
-            return list;
-        }
+        public List<Article> ArticlesToAdd() => 
+            lists.ArticlesByUser(UserName).Where(l => l.GroupId == 0).ToList();
     }
 }

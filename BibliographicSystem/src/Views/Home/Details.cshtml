@@ -23,8 +23,8 @@
         <div class="col-md-2"></div>
         <div class="col-md-6">
             <div class="row">
-                <h2> @Model.title</h2></div> 
-            @if (Request.IsAuthenticated && @Model.UserName == User.Identity.Name) { 
+                <h2> @Model.Title</h2></div> 
+            @if (Request.IsAuthenticated && Model.UserName == User.Identity.Name) { 
                 <div class="row">
                     <div class="col-md-2">
                         <form class="form-horizontal" method="post">
@@ -40,26 +40,26 @@
             }
             <br />
             <div class="row">
-                <table class="table" border="0">
+                <table class="table">
                     <tr>
                         <th>Тип</th>
                         <td>@Model.Type</td>
                     </tr>
                     <tr>
                         <th>Автор</th>
-                        <td>@Model.author</td>
+                        <td>@Model.Author</td>
                     </tr>
                     <tr>
                         <th>Год публикации</th>
-                        <td>@Model.year</td>
+                        <td>@Model.Year</td>
                     </tr>
                     <tr>
                         <th>Журнал</th>
-                        <td>@Model.journal</td>
+                        <td>@Model.Journal</td>
                     </tr>
                     <tr>
                         <th>Издатель</th>
-                        <td>@Model.publisher</td>
+                        <td>@Model.Publisher</td>
                     </tr>
                     <tr>
                         <th>Скачать полный текст</th>
@@ -67,17 +67,17 @@
                     </tr>
                     <tr>
                         <th>Скачать bibtex описание</th>
-                        <td><a href="/Home/GetBibFile/@Model.ArticleId">@Model.title .bib</a></td>
+                        <td><a href="/Home/GetBibFile/@Model.ArticleId">@Model.Title .bib</a></td>
                     </tr>
                     <tr>
                         <th>Библиографическая ссылка по ГОСТу Р 7.0.5—2008</th>
-                        <td>@Model.author @Model.title @Model.publisher @Model.journal, @Model.year.</td>
+                        <td>@Model.Author @Model.Title @Model.Publisher @Model.Journal, @Model.Year.</td>
                     </tr>
                 </table>
             </div>
                 <div class="row"><h3>Описание</h3></div>
                 <div class="row">
-                    <textarea class="form-control" readonly style="border-color:white; background-color:white">@Model.note</textarea>
+                    <textarea class="form-control" readonly style="border-color:white; background-color:white">@Model.Note</textarea>
                 </div>
 
             </div>

@@ -10,7 +10,7 @@
 
 @if (Request.IsAuthenticated)
 {
-    if (Model.wrongFile || Model.wrongDate) { 
+    if (Model.WrongFile || Model.WrongDate) { 
     <div class="container">
         <div class="row"> <div class="col-md-6"><h2>Здравствуйте, @User.Identity.Name! </h2> </div></div>
         <div class="row">
@@ -30,7 +30,7 @@
                         <input type="text" name="ArticleName" class="form-control" placeholder="Название" value="@Model.ArticleName"/> <br />
                         <input type="text" name="Author" class="form-control" placeholder="Автор" value="@Model.Author"/><br/>
                         <input type="text" name="TagList" class="form-control" placeholder="Список тэгов" value="@Model.TagList"/><br />
-                         if (Model.wrongDate)
+                         if (Model.WrongDate)
                          {
                             <input type="text" name="Year" class="form-control alert-danger" placeholder="Год издания" /><br />
                          }
@@ -54,7 +54,7 @@
                              } 
                          </select> <br />
                          <textarea name="Note" class="form-control" placeholder="Описание"> @Model.Note </textarea><br />
-                         if (Model.wrongFile)
+                         if (Model.WrongFile)
                          {
                              <p class="alert-danger">Неверный формат файла. Поддерживается только pdf.</p>
                              <input class="btn" type="file" name="fileUpload" /><br />
