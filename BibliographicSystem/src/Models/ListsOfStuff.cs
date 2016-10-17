@@ -25,6 +25,7 @@ namespace BibliographicSystem.Models
             (from a in db.UsersArticles.ToList() where name == a.UserName from art in db.Articles.ToList() where a.ArticleId == art.ArticleId select art).ToList();
 
         public List<string> TypesOfArticle() => new List<string> { "Книга", "Статья", "Другой тип" };
+        
     }
 
     public class AddingClass
