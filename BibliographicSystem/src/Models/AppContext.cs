@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace BibliographicSystem.Models
 {
-
     public class AppContext : DbContext
     {
         public DbSet<Article> Articles { get; set; }
@@ -42,7 +41,7 @@ namespace BibliographicSystem.Models
             (from user in UserInGroups.ToList() where user.GroupId == id select user.UserName).ToList();
 
         public List<Article> SearchByTag(string tagName) =>
-            (from art in this.Articles.ToList() from t in art.Tags where tagName == t.TagName select art).ToList();
+            (from art in Articles.ToList() from t in art.Tags where tagName == t.TagName select art).ToList();
 
         public List<Group> SearchGroupList(string name) =>
             Groups.ToList().Where(g => name == g.GroupName).ToList();

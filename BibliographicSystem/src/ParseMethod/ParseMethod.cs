@@ -89,12 +89,11 @@ namespace BibliographicSystem.ParseMethod
             var firstEntry = str.IndexOf(dashToFind, StringComparison.Ordinal);
             range.Add(firstEntry);
             range.Add(str.IndexOf(dashToFind, firstEntry + 3, StringComparison.Ordinal));
-
             return range;
         }
 
         /// <summary>
-        /// Forms a name for article in BibTeX 
+        /// Forms a name for article in BibTeX.
         /// Contains first author, year and first word of the title
         /// </summary>
         /// <param name="articleInfo"></param>
@@ -167,7 +166,6 @@ namespace BibliographicSystem.ParseMethod
                 var biblioCheck = doc.DocumentNode.SelectSingleNode(xPathBiblioCheck);
                 if (biblioCheck != null)
                 {
-
                     var xPathRefCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/h3/a";
                     var refCheck = doc.DocumentNode.SelectSingleNode(xPathRefCheck);
 

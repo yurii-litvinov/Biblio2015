@@ -75,7 +75,7 @@ namespace BibliographicSystem.Controllers
         [HttpPost]
         public ActionResult CorrectArticle(int articleId, string articleName, string author, string tagList, string year, string publisher, string journal, string note)
         {
-            var a = db.Articles.Find(articleId);
+            var article = db.Articles.Find(articleId);
             var newList = StringToList(tagList);
             var listTag = new List<Tag>();
             foreach (var tag in newList)
@@ -87,14 +87,14 @@ namespace BibliographicSystem.Controllers
             {
                 listTag.AddRange(db.Tags.ToList().Where(t => t.TagName == tag));
             }
-            a.Author = author;
-            a.Journal = journal;
-            a.Note = note;
-            a.Publisher = publisher;
-            a.Title = articleName;
-            a.Year = year;
-            a.Tags = listTag;
-            CreateBibFile(a);
+            article.Author = author;
+            article.Journal = journal;
+            article.Note = note;
+            article.Publisher = publisher;
+            article.Title = articleName;
+            article.Year = year;
+            article.Tags = listTag;
+            CreateBibFile(article);
             db.SaveChanges();
             return View("MainPage", db.Articles.ToList());
         }
@@ -125,10 +125,10 @@ namespace BibliographicSystem.Controllers
 
         public FileResult GetFile(int id)
         {
-            var a = db.Articles.Find(id);
-            var filePath = "~/Files/" + a.Path;
+            var article = db.Articles.Find(id);
+            var filePath = "~/Files/" + article.Path;
             var fileType = "application/pdf";
-            var fileName = a.Path;
+            var fileName = article.Path;
             return File(filePath, fileType, fileName);
         }
 
@@ -286,12 +286,12 @@ namespace BibliographicSystem.Controllers
                 var type = Request.Form["TypeT"];
                 var groupId = Convert.ToInt32(Request.Form["GroupT"]);
 
-                var a1 = new Article { Title = articleName, Path = filename, Tags = tags, Author = author, Type = type,
+                var article = new Article { Title = articleName, Path = filename, Tags = tags, Author = author, Type = type,
                     Journal = journal, Note = note, Publisher = publisher, Year = year, UserName = User.Identity.Name, GroupId = groupId };
-                db.Articles.Add(a1);
-                CreateBibFile(a1);
+                db.Articles.Add(article);
+                CreateBibFile(article);
                 db.SaveChanges();
-                var usersArticle = new UsersArticle { UserName = User.Identity.Name, ArticleId = a1.ArticleId };
+                var usersArticle = new UsersArticle { UserName = User.Identity.Name, ArticleId = article.ArticleId };
                 db.UsersArticles.Add(usersArticle);
                 db.SaveChanges();
             }
@@ -302,23 +302,28 @@ namespace BibliographicSystem.Controllers
 
         public ActionResult Finish() => View();
 
+        /// <summary>
+        /// Interpret string to list of words (Sequences, separated by spaces)
+        /// </summary>
+        /// <param name="str">  </param>
+        /// <returns> List of words in given string </returns>
         public List<string> StringToList(string str)
         {
             var newList = new List<string>();
-            var u = "";
-            foreach (var t in str)
+            var word = "";
+            foreach (var character in str)
             {
-                if (t != ' ')
+                if (character != ' ')
                 {
-                    u = u + t;
+                    word = word + character;
                 }
                 else
                 {
-                    newList.Add(u);
-                    u = "";
+                    newList.Add(word);
+                    word = "";
                 }
             }
-            newList.Add(u);
+            newList.Add(word);
             return newList;
         }
 
@@ -362,10 +367,10 @@ namespace BibliographicSystem.Controllers
                     db.SaveChanges();
                     break;
             }
-            var m = db.Groups.Find(groupId);
-            m.Articles = db.ArticleByGroup(groupId);
-            m.Users = db.UsersByGroup(groupId);
-            return View("GroupPage", m);
+            var model = db.Groups.Find(groupId);
+            model.Articles = db.ArticleByGroup(groupId);
+            model.Users = db.UsersByGroup(groupId);
+            return View("GroupPage", model);
         }
 
         protected override void Dispose(bool disposing)
