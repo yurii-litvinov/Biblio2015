@@ -152,7 +152,7 @@ namespace BibliographicSystem.ParseMethod
             query = GetQueryUrl(query);
             var pageContent = GetPageContent(query);
 
-            // creating list of articles for "searhc on scholar" view
+            // creating list of articles for "search on scholar" view
             var scholarArticles = new List<ScholarArticle>();
 
             var doc = new HtmlDocument();

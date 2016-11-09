@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
 using BibliographicSystem.Models;
@@ -14,7 +15,7 @@ namespace BibliographicSystem.Controllers
 
         public ActionResult SearchOnScholar()
         {
-            var lists = new ListsOfStuff {ScholarArt = new List<ScholarArticle>()};
+            var lists = new ListsOfStuff { ScholarArt = new List<ScholarArticle>() };
             return View("SearchOnScholar", lists);
         }
 
@@ -22,8 +23,16 @@ namespace BibliographicSystem.Controllers
         public ActionResult SearchOnScholar(string query)
         {
             var parsing = new ParseMethod.ParseMethod();
-            var lists = new ListsOfStuff {ScholarArt = parsing.GetScholarArticlesByQuery(query)};
-            return View("SearchOnScholar", lists);
+            try
+            {
+                var lists = new ListsOfStuff { ScholarArt = parsing.GetScholarArticlesByQuery(query) };
+                return View("SearchOnScholar", lists);
+            }
+            catch (NullReferenceException)
+            {
+                ModelState.AddModelError("Empty list", "Ничего не найдено");
+                return View("SearchOnScholar", new ListsOfStuff { ScholarArt = new List<ScholarArticle>() });
+            }
         }
 
         [HttpPost]

@@ -28,6 +28,8 @@ namespace BibliographicSystem.Controllers
 
         public ActionResult About() => View();
 
+        public ActionResult Contacts() => View();
+
         public ActionResult CreateGroup() => View();
 
         public ActionResult AddArticleToGroup(int id) =>
