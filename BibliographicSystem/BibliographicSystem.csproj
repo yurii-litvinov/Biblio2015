@@ -189,6 +189,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\BibliographicSystem.Models.AppContext.mdf" />
+    <Content Include="App_Data\BibliographicSystem.Models.AppContext_log.ldf">
+      <DependentUpon>BibliographicSystem.Models.AppContext.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Data\BootAppDB.mdf" />
+    <Content Include="App_Data\BootAppDB_log.ldf">
+      <DependentUpon>BootAppDB.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -228,7 +236,9 @@
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -261,9 +271,7 @@
     <Content Include="Views\Shared\UserGroupList.cshtml" />
     <Content Include="Views\Shared\_LogInPartial.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
