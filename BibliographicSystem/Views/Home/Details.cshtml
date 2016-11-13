@@ -1,0 +1,86 @@
+﻿@model BibliographicSystem.Models.Article
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style type="text/css">
+    .container {
+        font-size: medium;
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+
+<br />
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-6">
+            <div class="row">
+                <h2> @Model.Title</h2></div> 
+            @if (Request.IsAuthenticated && Model.UserName == User.Identity.Name) { 
+                <div class="row">
+                    <div class="col-md-2">
+                        <form class="form-horizontal" method="post">
+                            <textarea class="sr-only" name="ArticleId">@Model.ArticleId</textarea>
+                            <textarea class="sr-only" name="ToMakeChoise">1</textarea>
+                            <button class="btn btn-primary" name="DeleteArt" type="submit">Удалить</button>
+                        </form>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" name="CorrectArt" type="submit" onclick="location.href = '/Home/CorrectArticle/@Model.ArticleId'">Редактировать</button>
+                    </div>
+                </div>
+            }
+            <br />
+            <div class="row">
+                <table class="table">
+                    <tr>
+                        <th>Тип</th>
+                        <td>@Model.Type</td>
+                    </tr>
+                    <tr>
+                        <th>Автор</th>
+                        <td>@Model.Author</td>
+                    </tr>
+                    <tr>
+                        <th>Год публикации</th>
+                        <td>@Model.Year</td>
+                    </tr>
+                    <tr>
+                        <th>Журнал</th>
+                        <td>@Model.Journal</td>
+                    </tr>
+                    <tr>
+                        <th>Издатель</th>
+                        <td>@Model.Publisher</td>
+                    </tr>
+                    <tr>
+                        <th>Скачать полный текст</th>
+                        <td><a href="/Home/GetFile/@Model.ArticleId">@Model.Path</a></td>
+                    </tr>
+                    <tr>
+                        <th>Скачать bibtex описание</th>
+                        <td><a href="/Home/GetBibFile/@Model.ArticleId">@Model.Title .bib</a></td>
+                    </tr>
+                    <tr>
+                        <th>Библиографическая ссылка по ГОСТу Р 7.0.5—2008</th>
+                        <td>@Model.Author @Model.Title @Model.Publisher @Model.Journal, @Model.Year.</td>
+                    </tr>
+                </table>
+            </div>
+                <div class="row"><h3>Описание</h3></div>
+                <div class="row">
+                    <textarea class="form-control" readonly style="border-color:white; background-color:white">@Model.Note</textarea>
+                </div>
+
+            </div>
+
+    </div>
+</div>
