@@ -1,0 +1,36 @@
+﻿@model BibliographicSystem.Models.ListsOfStuff
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<br />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            
+            <div class="row"><h2>Моя страница</h2></div>
+            <div class="row"><a href="/Home/pls">Скачать библиографию</a></div>
+    </div>
+        </div>
+    <div class="row">
+        <div class="col-md-6"><h4>Мои группы</h4></div>
+        <div class="col-md-6"><h4>Мои документы</h4></div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @Html.Partial("UserGroupList", Model.GroupsByUserName(User.Identity.Name))
+        </div>
+        <div class="col-md-6">@Html.Partial("UserArticles", Model.ArticlesByUser(User.Identity.Name))</div>
+    </div>
+    <!--<div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <button class="btn-primary btn" name="Download" onclick="">Скачать библиографию</button>
+            
+</div>
+        </div-->
+    </div>
