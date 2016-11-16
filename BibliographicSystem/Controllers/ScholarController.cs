@@ -13,25 +13,25 @@ namespace BibliographicSystem.Controllers
         //
         // GET: /Scholar/
 
-        public ActionResult SearchOnScholar()
-        {
-            var lists = new ListsOfStuff { ScholarArt = new List<ScholarArticle>() };
-            return View("SearchOnScholar", lists);
-        }
-
-        [HttpPost]
         public ActionResult SearchOnScholar(string query)
         {
+            return View("SearchOnScholar", "");
+        }
+
+        public PartialViewResult GetSearchOnScholar(string query = "")
+        {
+            if (query.Length == 0)
+                return PartialView("GetSearchOnScholar", new ListsOfStuff { ScholarArt = new List<ScholarArticle>() });
             var parsing = new ParseMethod.ParseMethod();
             try
             {
                 var lists = new ListsOfStuff { ScholarArt = parsing.GetScholarArticlesByQuery(query) };
-                return View("SearchOnScholar", lists);
+                return PartialView("GetSearchOnScholar", lists);
             }
             catch (NullReferenceException)
             {
                 ModelState.AddModelError("Empty list", "Ничего не найдено");
-                return View("SearchOnScholar", new ListsOfStuff { ScholarArt = new List<ScholarArticle>() });
+                return PartialView("GetSearchOnScholar", new ListsOfStuff { ScholarArt = new List<ScholarArticle>() });
             }
         }
 
