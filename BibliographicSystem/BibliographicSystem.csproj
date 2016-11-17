@@ -272,7 +272,7 @@
     <Content Include="Views\Shared\UserArticles.cshtml" />
     <Content Include="Views\Shared\UserGroupList.cshtml" />
     <Content Include="Views\Shared\_LogInPartial.cshtml" />
-    <Content Include="Views\Scholar\GetSearchOnScholar.cshtml" />
+    <Content Include="Views\Scholar\SearchOnScholarResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\People\" />

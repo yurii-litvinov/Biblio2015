@@ -18,19 +18,19 @@ namespace BibliographicSystem.Controllers
             return View("SearchOnScholar", "");
         }
 
-        public PartialViewResult GetSearchOnScholar(string query = "")
+        public PartialViewResult SearchOnScholarResult(string query = "")
         {
             if (query.Length == 0)
-                return PartialView("GetSearchOnScholar",new List<ScholarArticle>());
+                return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
             var parsing = new ParseMethod.ParseMethod();
             try
             {
-                return PartialView("GetSearchOnScholar", parsing.GetScholarArticlesByQuery(query));
+                return PartialView("SearchOnScholarResult", parsing.GetScholarArticlesByQuery(query));
             }
             catch (NullReferenceException)
             {
                 ModelState.AddModelError("Empty list", "Ничего не найдено");
-                return PartialView("GetSearchOnScholar", new List<ScholarArticle>());
+                return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
             }
         }
 

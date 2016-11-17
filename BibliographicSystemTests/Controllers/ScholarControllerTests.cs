@@ -1,0 +1,68 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using BibliographicSystem.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace BibliographicSystem.Controllers.Tests
+{
+    [TestClass]
+    public class ScholarControllerTests
+    {
+        /// <summary>
+        /// Test for empty query
+        /// </summary>
+        [TestMethod]
+        public void SearchOnScholarResultTest()
+        {
+            var controller = new ScholarController();
+            var view = controller.SearchOnScholarResult("");
+            var list = (List<ScholarArticle>) view.Model;
+            Assert.AreEqual(0, list.Count);            
+        }
+
+        /// <summary>
+        /// Usual search test
+        /// </summary>
+        [TestMethod]
+        public void SearchOnScholarResultTest2()
+        {
+            var controller = new ScholarController();
+            var view = controller.SearchOnScholarResult("journal");
+            var list = (List<ScholarArticle>)view.Model;
+            Assert.AreEqual(10, list.Count);
+            var heads= list.Select(article => article.Title).ToList();
+            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("journal"));
+            Assert.IsTrue(count > 0);
+        }
+
+        /// <summary>
+        /// Test for bug fixed
+        /// </summary>
+        [TestMethod]
+        public void SearchOnScholarResultTest3()
+        {
+            var controller = new ScholarController();
+            var view = controller.SearchOnScholarResult("kill");
+            var list = (List<ScholarArticle>)view.Model;
+            Assert.AreEqual(10, list.Count);
+            var heads = list.Select(article => article.Title).ToList();
+            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("kill"));
+            Assert.IsTrue(count > 0);
+        }
+
+        /// <summary>
+        /// Test for russian letters
+        /// </summary>
+        [TestMethod]
+        public void SearchOnScholarResultTest4()
+        {
+            var controller = new ScholarController();
+            var view = controller.SearchOnScholarResult("иванов");
+            var list = (List<ScholarArticle>)view.Model;
+            Assert.AreEqual(10, list.Count);
+            var heads = list.Select(article => article.Title).ToList();
+            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("иванов"));
+            Assert.IsTrue(count > 0);
+        }
+    }
+}

@@ -12,7 +12,7 @@
 <br>
 <br>
 
-@using (Ajax.BeginForm("GetSearchOnScholar", ajaxOptions))
+@using (Ajax.BeginForm("SearchOnScholarResult", ajaxOptions))
 {
     <div class="input-group">
         <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск на Google.Scholar">
@@ -23,5 +23,5 @@
 }
 
 <form id="getDataList">
-    @Html.Action("GetSearchOnScholar", "Scholar", Model)
+    @Html.Action("SearchOnScholarResult", "Scholar", Model)
 </form>
