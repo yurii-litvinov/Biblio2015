@@ -15,7 +15,6 @@ namespace BibliographicSystem.Models
         public string Journal { get; set; }
         public string Publisher{ get; set; }
         public string Note { get; set; }
-        public List<ScholarArticle> ScholarArt { get; set; }
 
         private readonly AppContext db = new AppContext();
 

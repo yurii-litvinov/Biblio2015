@@ -21,17 +21,16 @@ namespace BibliographicSystem.Controllers
         public PartialViewResult GetSearchOnScholar(string query = "")
         {
             if (query.Length == 0)
-                return PartialView("GetSearchOnScholar", new ListsOfStuff { ScholarArt = new List<ScholarArticle>() });
+                return PartialView("GetSearchOnScholar",new List<ScholarArticle>());
             var parsing = new ParseMethod.ParseMethod();
             try
             {
-                var lists = new ListsOfStuff { ScholarArt = parsing.GetScholarArticlesByQuery(query) };
-                return PartialView("GetSearchOnScholar", lists);
+                return PartialView("GetSearchOnScholar", parsing.GetScholarArticlesByQuery(query));
             }
             catch (NullReferenceException)
             {
                 ModelState.AddModelError("Empty list", "Ничего не найдено");
-                return PartialView("GetSearchOnScholar", new ListsOfStuff { ScholarArt = new List<ScholarArticle>() });
+                return PartialView("GetSearchOnScholar", new List<ScholarArticle>());
             }
         }
 

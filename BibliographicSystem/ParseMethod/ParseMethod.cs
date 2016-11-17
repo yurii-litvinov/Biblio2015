@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -22,11 +24,13 @@ namespace BibliographicSystem.ParseMethod
 
         private string GetPageContent(string url)
         {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            var response = (HttpWebResponse)request.GetResponse();
+            var request = WebRequest.Create(url) as HttpWebRequest;
+            var response = request.GetResponse() as HttpWebResponse;
             var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("windows-1251"));
             var pageContent = streamReader.ReadToEnd();
             streamReader.Close();
+            /*StringConverter converter = new StringConverter();
+            converter.ConvertFrom(pageContent, CultureInfo.CurrentCulture, );*/
             return pageContent;
         }
 
@@ -157,7 +161,7 @@ namespace BibliographicSystem.ParseMethod
 
             var doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
-
+          
             for (var i = 1; i <= 10; i++)
             {
                 var article = new ScholarArticle();
