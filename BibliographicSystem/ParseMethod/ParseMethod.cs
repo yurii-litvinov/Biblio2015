@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using BibliographicSystem.Models;
 using HtmlAgilityPack;
 
@@ -16,21 +15,20 @@ namespace BibliographicSystem.ParseMethod
     {
         public string GetQueryUrl(string query)
         {
+            query = HttpUtility.UrlEncode(query);
             const string url = "http://scholar.google.com/scholar?hl=en&q=";
-            query = query.Replace(' ', '+');
             query = string.Concat(url, query);
             return query;
         }
 
         private string GetPageContent(string url)
         {
-            var request = WebRequest.Create(url) as HttpWebRequest;
-            var response = request.GetResponse() as HttpWebResponse;
-            var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("windows-1251"));
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            var response = (HttpWebResponse)request.GetResponse();
+            var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
             var pageContent = streamReader.ReadToEnd();
             streamReader.Close();
-            /*StringConverter converter = new StringConverter();
-            converter.ConvertFrom(pageContent, CultureInfo.CurrentCulture, );*/
+            pageContent = HttpUtility.HtmlDecode(pageContent);
             return pageContent;
         }
 
@@ -161,7 +159,7 @@ namespace BibliographicSystem.ParseMethod
 
             var doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
-          
+
             for (var i = 1; i <= 10; i++)
             {
                 var article = new ScholarArticle();

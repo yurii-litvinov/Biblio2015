@@ -57,11 +57,41 @@ namespace BibliographicSystem.Controllers.Tests
         public void SearchOnScholarResultTest4()
         {
             var controller = new ScholarController();
-            var view = controller.SearchOnScholarResult("иванов");
+            var view = controller.SearchOnScholarResult("задача");
             var list = (List<ScholarArticle>)view.Model;
             Assert.AreEqual(10, list.Count);
             var heads = list.Select(article => article.Title).ToList();
-            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("иванов"));
+            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("задача"));
+            Assert.IsTrue(count > 0);
+        }
+
+        /// <summary>
+        /// Test for query with spaces
+        /// </summary>
+        [TestMethod]
+        public void SearchOnScholarResultTest5()
+        {
+            var controller = new ScholarController();
+            var view = controller.SearchOnScholarResult("теорема Коши");
+            var list = (List<ScholarArticle>)view.Model;
+            Assert.AreEqual(10, list.Count);
+            var heads = list.Select(article => article.Title).ToList();
+            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("теорема коши"));
+            Assert.IsTrue(count > 0);
+        }
+
+        /// <summary>
+        /// Test for query with spaces
+        /// </summary>
+        [TestMethod]
+        public void SearchOnScholarResultTest6()
+        {
+            var controller = new ScholarController();
+            var view = controller.SearchOnScholarResult("Перельман гипотеза Пуанкаре");
+            var list = (List<ScholarArticle>)view.Model;
+            Assert.AreEqual(10, list.Count);
+            var heads = list.Select(article => article.Title).ToList();
+            var count = heads.Select(head => head.ToLower()).Count(lowerHead => lowerHead.Contains("перельман") || lowerHead.Contains("гипотеза") || lowerHead.Contains("пуанкаре"));
             Assert.IsTrue(count > 0);
         }
     }
