@@ -11,16 +11,19 @@ using HtmlAgilityPack;
 
 namespace BibliographicSystem.ParseMethod
 {
+    /// <summary>
+    /// Class for parsing Google.Scholar 
+    /// </summary>
     public class ParseMethod
     {
-        public string GetQueryUrl(string query)
+        private string GetQueryUrl(string query)
         {
             query = HttpUtility.UrlEncode(query);
             const string url = "http://scholar.google.com/scholar?hl=en&q=";
             query = string.Concat(url, query);
             return query;
         }
-
+        
         private string GetPageContent(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
@@ -148,6 +151,11 @@ namespace BibliographicSystem.ParseMethod
             return bibtex;
         }
 
+        /// <summary>
+        /// Main class method
+        /// </summary>
+        /// <param name="query"> String from text box </param>
+        /// <returns> List of articles from Google.Scholar </returns>
         public List<ScholarArticle> GetScholarArticlesByQuery(string query)
         {
             // getting page content from scholar page (with given query)
@@ -160,7 +168,7 @@ namespace BibliographicSystem.ParseMethod
             var doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
 
-            for (var i = 1; i <= 10; i++)
+            for (var i = 1; i <= 11; i++)
             {
                 var article = new ScholarArticle();
                 var xPathBiblioCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]";
@@ -187,7 +195,7 @@ namespace BibliographicSystem.ParseMethod
                     var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
                     article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
 
-                    scholarArticles.Insert(i - 1, article);
+                    scholarArticles.Add(article);
                 }
                 else
                 {
@@ -207,7 +215,7 @@ namespace BibliographicSystem.ParseMethod
                         var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
                         article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
 
-                        scholarArticles.Insert(i - 1, article);
+                        scholarArticles.Add(article);
                     }
 
                     else
@@ -216,20 +224,23 @@ namespace BibliographicSystem.ParseMethod
                         var xPathTitleCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3";
                         var xPathSpanNode = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3/span";
                         var titleMatchNode = doc.DocumentNode.SelectSingleNode(xPathTitleCheck);
-                        var spanNode = doc.DocumentNode.SelectSingleNode(xPathSpanNode);
-                        titleMatchNode.RemoveChild(spanNode);
-                        article.Title = titleMatchNode.InnerText;
+                        if (titleMatchNode != null)
+                        {
+                            var spanNode = doc.DocumentNode.SelectSingleNode(xPathSpanNode);
+                            titleMatchNode.RemoveChild(spanNode);
+                            article.Title = titleMatchNode.InnerText;
 
-                        string xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
-                        article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                            string xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
+                            article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
 
-                        article.Reference = "This article does not have a reference";
+                            article.Reference = "This article does not have a reference";
 
-                        var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]/a[1]";
-                        var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                        article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
+                            var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]/a[1]";
+                            var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                            article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
 
-                        scholarArticles.Insert(i - 1, article);
+                            scholarArticles.Add(article);
+                        }
                     }
                 }
             }
