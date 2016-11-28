@@ -185,7 +185,7 @@
     <Compile Include="Models\ScholarArticle.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\UsersArticle.cs" />
-    <Compile Include="ParseMethod\ParseMethod.cs" />
+    <Compile Include="SearchingMethods\GoogleScholarParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

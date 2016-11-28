@@ -142,24 +142,6 @@ namespace BibliographicSystem.Controllers
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
-        public FileResult Kek(int id)
-        {
-            var group = db.Groups.Find(id);
-            CreateBibFile(group);
-            var fileName = group.GroupName + ".bib";
-            var filePath = "~/BibFiles/" + fileName;
-            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }
-
-        public FileResult Pls()
-        {
-            var name = User.Identity.Name;
-            CreateBibFile(name);
-            var fileName = name + ".bib";
-            var filePath = "~/BibFiles/" + fileName;
-            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }
-
         public string CreateBibFile(Article art)
         {
             var directory = AppDomain.CurrentDomain.BaseDirectory;

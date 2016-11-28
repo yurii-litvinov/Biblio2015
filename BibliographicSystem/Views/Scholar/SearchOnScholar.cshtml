@@ -16,6 +16,7 @@
 {
     <div class="input-group">
         <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск на Google.Scholar">
+        <input type="number" id="Number" name="Number" class="form-control" placeholder="Количество статей">
         <span class="input-group-btn">
             <button class="btn btn-default" type="submit">Поиск</button>
         </span>
@@ -23,5 +24,4 @@
 }
 
 <form id="getDataList">
-    @Html.Action("SearchOnScholarResult", "Scholar", Model)
 </form>

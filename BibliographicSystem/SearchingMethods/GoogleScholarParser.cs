@@ -9,17 +9,17 @@ using System.Web;
 using BibliographicSystem.Models;
 using HtmlAgilityPack;
 
-namespace BibliographicSystem.ParseMethod
+namespace BibliographicSystem.SearchingMethods
 {
     /// <summary>
     /// Class for parsing Google.Scholar 
     /// </summary>
-    public class ParseMethod
+    public class GoogleScholarParser
     {
-        private string GetQueryUrl(string query)
+        private string GetQueryUrl(string query, int page)
         {
             query = HttpUtility.UrlEncode(query);
-            const string url = "http://scholar.google.com/scholar?hl=en&q=";
+            var url = "http://scholar.google.com/scholar?start="+ page + "&hl=en&q=";
             query = string.Concat(url, query);
             return query;
         }
@@ -155,11 +155,12 @@ namespace BibliographicSystem.ParseMethod
         /// Main class method
         /// </summary>
         /// <param name="query"> String from text box </param>
+        /// <param name="page"> Number of page to find </param>
         /// <returns> List of articles from Google.Scholar </returns>
-        public List<ScholarArticle> GetScholarArticlesByQuery(string query)
+        public List<ScholarArticle> GetScholarArticlesByQuery(string query, int page)
         {
             // getting page content from scholar page (with given query)
-            query = GetQueryUrl(query);
+            query = GetQueryUrl(query, page);
             var pageContent = GetPageContent(query);
 
             // creating list of articles for "search on scholar" view
@@ -167,7 +168,6 @@ namespace BibliographicSystem.ParseMethod
 
             var doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
-
             for (var i = 1; i <= 11; i++)
             {
                 var article = new ScholarArticle();
