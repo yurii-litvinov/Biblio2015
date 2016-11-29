@@ -29,8 +29,23 @@ namespace BibliographicSystem.Controllers
         /// </summary>
         /// <param name="query"> String to find </param>
         /// <param name="number"> Number of articles to find</param>
+        /// <param name="exactPhrase"> Article should contains this phrase </param>
+        /// <param name="without"> Articles should not contains this words </param>
+        /// <param name="head"> Is searching only in article head </param>
+        /// <param name="published"> Journal, where the article was published </param>
+        /// <param name="author"> Author of article </param>
+        /// <param name="dateStart"> Since date </param>
+        /// <param name="dateEnd"> Till date </param>
         /// <returns> Block of Scholar articles </returns>
-        public PartialViewResult SearchOnScholarResult(string query = "", int number = 10)
+        public PartialViewResult SearchOnScholarResult(string query = "", 
+            int number = 10,
+            string exactPhrase = null, 
+            string without = null,
+            bool head = false,
+            string published = null,
+            string author = null,
+            int dateStart = int.MinValue,
+            int dateEnd = int.MinValue)
         {
             if (query.Length == 0)
                 return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
@@ -41,7 +56,7 @@ namespace BibliographicSystem.Controllers
                 for (var i = 0; i < number; i += 10)
                 {
                     var parsedArticles = resultList.Count;
-                    resultList.AddRange(parsing.GetScholarArticlesByQuery(query, i));
+                    resultList.AddRange(parsing.GetScholarArticlesByQuery(query, i, exactPhrase, without, head, published, author, dateStart, dateEnd));
                     if (resultList.Count == parsedArticles)
                         break;
                 }

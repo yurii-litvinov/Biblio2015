@@ -16,11 +16,33 @@ namespace BibliographicSystem.SearchingMethods
     /// </summary>
     public class GoogleScholarParser
     {
-        private string GetQueryUrl(string query, int page)
+        private string GetQueryUrl(string query, 
+            int page,
+            string exactPhrase = null,
+            string without = null,
+            bool head = false,
+            string published = null,
+            string author = null,
+            int dateStart = int.MinValue,
+            int dateEnd = int.MinValue)
         {
             query = HttpUtility.UrlEncode(query);
+            if (exactPhrase != null)
+                query += '+' + HttpUtility.UrlEncode('"' + exactPhrase + '"');
+            if (without != null)
+                query += '+' + HttpUtility.UrlEncode('-' + without);
+            if (author != null)
+                query += '+' + HttpUtility.UrlEncode("author:" + author);
             var url = "http://scholar.google.com/scholar?start="+ page + "&hl=en&q=";
             query = string.Concat(url, query);
+            if (head)
+                query += "&as_occt = title";
+            if (dateStart  > 0)
+                query += string.Concat("&as_ylo=", HttpUtility.UrlEncode(dateStart.ToString()));
+            if (dateEnd > 0)
+                query += string.Concat("&as_yhi=", HttpUtility.UrlEncode(dateEnd.ToString()));
+            if (published != null)
+                query += string.Concat("&as_publication=", HttpUtility.UrlEncode(published));
             return query;
         }
         
@@ -156,11 +178,26 @@ namespace BibliographicSystem.SearchingMethods
         /// </summary>
         /// <param name="query"> String from text box </param>
         /// <param name="page"> Number of page to find </param>
+        /// <param name="exactPhrase"> Article should contains this phrase </param>
+        /// <param name="without"> Articles should not contains this words </param>
+        /// <param name="head"> Is searching only in article head </param>
+        /// <param name="published"> Journal, where the article was published </param>
+        /// <param name="author"> Author of article </param>
+        /// <param name="dateStart"> Since date </param>
+        /// <param name="dateEnd"> Till date </param>
         /// <returns> List of articles from Google.Scholar </returns>
-        public List<ScholarArticle> GetScholarArticlesByQuery(string query, int page)
+        public List<ScholarArticle> GetScholarArticlesByQuery(string query, 
+            int page,
+            string exactPhrase = null,
+            string without = null,
+            bool head = false,
+            string published = null,
+            string author = null,
+            int dateStart = int.MinValue,
+            int dateEnd = int.MinValue)
         {
             // getting page content from scholar page (with given query)
-            query = GetQueryUrl(query, page);
+            query = GetQueryUrl(query, page, exactPhrase, without, head, published, author, dateStart, dateEnd);
             var pageContent = GetPageContent(query);
 
             // creating list of articles for "search on scholar" view

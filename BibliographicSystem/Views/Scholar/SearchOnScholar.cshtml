@@ -14,12 +14,44 @@
 
 @using (Ajax.BeginForm("SearchOnScholarResult", ajaxOptions))
 {
-    <div class="input-group">
-        <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск на Google.Scholar">
-        <input type="number" id="Number" name="Number" class="form-control" placeholder="Количество статей">
-        <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">Поиск</button>
-        </span>
+    <div>
+        <div class="input-group">
+            <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск на Google.Scholar">
+            <input type="number" id="Number" name="Number" class="form-control" placeholder="Количество статей">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Поиск</button>
+            </span>
+        </div>
+        <form>
+            <label> Точный поиск. Найти статьи, </label>
+            <div class="item">
+                В которых встречается точное словосочетание
+                <input type="text" id="ExactPhrase" name="ExactPhrase" class="form-group" placeholder="Словосочетание">
+            </div>
+            <div class="item">
+                В которых нет слов
+                <input type="text" id="AllWords" name="Without" class="Without" placeholder="Нет слов">
+            </div>
+            <div class="item">
+                <input checked="checked" id="Head" name="Head" type="radio" value="false"/> Везде в статье
+            </div>
+            <div class="item">
+                <input id="Head" name="Head" type="radio" value="true" /> Только в заголовке
+            </div>
+            <div class="item">
+                Опубликованы в
+                <input type="text" id="Published" name="Published" class="form-group" placeholder="Место публикации">
+            </div>
+            <div class="item">
+                Авторы 
+                <input type="text" id="Author" name="Author" class="form-group" placeholder="Авторы">
+            </div>
+            <div class="item">
+                Опубликованы в период 
+                <input type="number" id="DateStart" name="DateStart" class="form-group" placeholder="Начало"style="width:100px" maxlength="4">
+                <input type="number" id="DateEnd" name="DateEnd" class="form-group" placeholder="Конец"style="width:100px">
+            </div>
+        </form>
     </div>
 }
 
