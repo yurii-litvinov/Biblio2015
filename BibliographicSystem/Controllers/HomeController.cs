@@ -18,7 +18,7 @@ namespace BibliographicSystem.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var newList = new ListsOfStuff
+            var newList = new AddingToSystem
             {
                 WrongDate = false,
                 WrongFile = false
@@ -33,14 +33,14 @@ namespace BibliographicSystem.Controllers
         public ActionResult CreateGroup() => View();
 
         public ActionResult AddArticleToGroup(int id) =>
-            View(new AddingClass { UserName = User.Identity.Name, GroupId = id });
+            View(new AddingToGroup { UserName = User.Identity.Name, GroupId = id });
 
         [HttpPost]
         public ActionResult AddArticleToGroup(int idGroup, int idArticle)
         {
             db.Articles.Find(idArticle).GroupId = idGroup;
             db.SaveChanges();
-            var a = new AddingClass { UserName = User.Identity.Name, GroupId = idGroup };
+            var a = new AddingToGroup { UserName = User.Identity.Name, GroupId = idGroup };
             return View("AddArticleToGroup", a);
         }
 
@@ -216,11 +216,11 @@ namespace BibliographicSystem.Controllers
             string author, string year, string journal, string publisher, string note)
         {
             if (articleName == "")
-                return View(new ListsOfStuff());
+                return View(new AddingToSystem());
 
             if ((DateTime.Now.Year <= Convert.ToInt32(year)) || (Convert.ToInt32(year) <= 1500))
             {
-                return View(new ListsOfStuff
+                return View(new AddingToSystem
                 {
                     ArticleName = articleName,
                     Author = author,
@@ -240,7 +240,7 @@ namespace BibliographicSystem.Controllers
                     var fileExt = Path.GetExtension(file.FileName)?.Substring(1);
                     if (fileExt != allowFormat)
                     {
-                        return View(new ListsOfStuff
+                        return View(new AddingToSystem
                         {
                             ArticleName = articleName,
                             Author = author,

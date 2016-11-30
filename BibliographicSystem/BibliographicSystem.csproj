@@ -177,10 +177,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AddingToGroup.cs" />
     <Compile Include="Models\AppContext.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Group.cs" />
-    <Compile Include="Models\ListsOfStuff.cs" />
+    <Compile Include="Models\AddingToSystem.cs" />
     <Compile Include="Models\LogModel.cs" />
     <Compile Include="Models\ScholarArticle.cs" />
     <Compile Include="Models\Tag.cs" />

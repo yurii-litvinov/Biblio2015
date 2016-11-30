@@ -65,7 +65,7 @@ namespace BibliographicSystem.Controllers
             return View(model);
         }
 
-        public ActionResult Manage() => View(new ListsOfStuff());
+        public ActionResult Manage() => View(new AddingToSystem());
     }
 }
 
