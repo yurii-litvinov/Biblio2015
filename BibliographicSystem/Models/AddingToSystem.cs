@@ -3,7 +3,10 @@ using System.Linq;
 
 namespace BibliographicSystem.Models
 {
-    public class ListsOfStuff
+    /// <summary>
+    /// Class for adding article to system
+    /// </summary>
+    public class AddingToSystem
     {
         public bool WrongFile { get; set; }
         public bool WrongDate { get; set; }
@@ -25,15 +28,5 @@ namespace BibliographicSystem.Models
 
         public List<string> TypesOfArticle() => new List<string> { "Книга", "Статья", "Другой тип" };
         
-    }
-
-    public class AddingClass
-    {
-        public int GroupId { get; set; }
-        public string UserName { get; set; }
-        private readonly ListsOfStuff lists = new ListsOfStuff();
-
-        public List<Article> ArticlesToAdd() => 
-            lists.ArticlesByUser(UserName).Where(l => l.GroupId == 0).ToList();
     }
 }
