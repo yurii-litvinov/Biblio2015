@@ -27,11 +27,11 @@ namespace BibliographicSystem.SearchingMethods
             int dateEnd = int.MinValue)
         {
             query = HttpUtility.UrlEncode(query);
-            if (exactPhrase != null)
+            if (!string.IsNullOrEmpty(exactPhrase))
                 query += '+' + HttpUtility.UrlEncode('"' + exactPhrase + '"');
-            if (without != null)
+            if (!string.IsNullOrEmpty(without))
                 query += '+' + HttpUtility.UrlEncode('-' + without);
-            if (author != null)
+            if (!string.IsNullOrEmpty(author))
                 query += '+' + HttpUtility.UrlEncode("author:" + author);
             var url = "http://scholar.google.com/scholar?start="+ page + "&hl=en&q=";
             query = string.Concat(url, query);
