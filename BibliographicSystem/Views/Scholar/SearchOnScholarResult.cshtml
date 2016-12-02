@@ -1,0 +1,51 @@
+﻿@model List<BibliographicSystem.Models.ScholarArticle>
+@Html.ValidationMessage("Empty list")
+
+@if (Model.Count != 0)
+{
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <h3>Список статей</h3>
+        </div>
+    </div>
+}
+
+@foreach (var art in Model)
+{
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">@art.Title</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <li class="list-group-item">@art.Info</li>
+                    <li class="list-group-item">@art.Citiations</li>
+                    <a class="list-group-item" name="@art.Reference" href="@art.Reference">@art.Reference</a>
+                    <span class="input-group-btn">
+                        @if (Request.IsAuthenticated)
+                        {
+                            using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
+                            {
+                                <input type="text" name="title" value="@art.Title" hidden="true" />
+                                    <input type="text" name="info" value="@art.Info" hidden="true" />
+                                    <input type="text" name="reference" value="@art.Reference" hidden="true" />
+                                    <input type="text" name="username" value="@User.Identity.Name" hidden="true" />
+                                    <button type="submit" class="btn btn-default">Добавить статью</button>
+                            }
+
+                        }
+                        @using (Html.BeginForm("DownloadBibTeX", "Scholar", FormMethod.Post))
+                        {
+                            <input type="text" name="title" value="@art.Title" hidden="true" />
+                                <input type="text" name="info" value="@art.Info" hidden="true" />
+                                <input type="text" name="reference" value="@art.Reference" hidden="true" />
+                                <button type="submit" class="btn btn-default">Скачать BibTeX</button>
+                        }
+                    </span>
+                </ul>
+            </div>
+        </div>
+    }
+}

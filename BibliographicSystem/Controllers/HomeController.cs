@@ -18,7 +18,7 @@ namespace BibliographicSystem.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            var newList = new ListsOfStuff
+            var newList = new AddingToSystem
             {
                 WrongDate = false,
                 WrongFile = false
@@ -33,15 +33,14 @@ namespace BibliographicSystem.Controllers
         public ActionResult CreateGroup() => View();
 
         public ActionResult AddArticleToGroup(int id) =>
-            View(new AddingClass { UserName = User.Identity.Name, GroupId = id });
+            View(new AddingToGroup { UserName = User.Identity.Name, GroupId = id });
 
         [HttpPost]
         public ActionResult AddArticleToGroup(int idGroup, int idArticle)
         {
             db.Articles.Find(idArticle).GroupId = idGroup;
             db.SaveChanges();
-            var a = new AddingClass { UserName = User.Identity.Name, GroupId = idGroup };
-            return View("AddArticleToGroup", a);
+            return View("AddArticleToGroup", new AddingToGroup { UserName = User.Identity.Name, GroupId = idGroup });
         }
 
         [HttpPost]
@@ -136,27 +135,9 @@ namespace BibliographicSystem.Controllers
 
         public FileResult GetBibFile(int id)
         {
-            var a = db.Articles.Find(id);
-            var filePath = "~/BibFiles/" + a.Title.Split('.') + ".bib";
-            var fileName = a.Title.Split('.') + ".bib";
-            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }
-
-        public FileResult Kek(int id)
-        {
-            var group = db.Groups.Find(id);
-            CreateBibFile(group);
-            var fileName = group.GroupName + ".bib";
-            var filePath = "~/BibFiles/" + fileName;
-            return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-        }
-
-        public FileResult Pls()
-        {
-            var name = User.Identity.Name;
-            CreateBibFile(name);
-            var fileName = name + ".bib";
-            var filePath = "~/BibFiles/" + fileName;
+            var article = db.Articles.Find(id);
+            var filePath = "~/BibFiles/" + article.Title.Split('.') + ".bib";
+            var fileName = article.Title.Split('.') + ".bib";
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
@@ -234,11 +215,11 @@ namespace BibliographicSystem.Controllers
             string author, string year, string journal, string publisher, string note)
         {
             if (articleName == "")
-                return View(new ListsOfStuff());
+                return View(new AddingToSystem());
 
             if ((DateTime.Now.Year <= Convert.ToInt32(year)) || (Convert.ToInt32(year) <= 1500))
             {
-                return View(new ListsOfStuff
+                return View(new AddingToSystem
                 {
                     ArticleName = articleName,
                     Author = author,
@@ -258,7 +239,7 @@ namespace BibliographicSystem.Controllers
                     var fileExt = Path.GetExtension(file.FileName)?.Substring(1);
                     if (fileExt != allowFormat)
                     {
-                        return View(new ListsOfStuff
+                        return View(new AddingToSystem
                         {
                             ArticleName = articleName,
                             Author = author,
@@ -364,8 +345,7 @@ namespace BibliographicSystem.Controllers
                     db.SaveChanges();
                     break;
                 default:
-                    var a = db.Articles.Find(Convert.ToInt32(wade));
-                    a.GroupId = 0;
+                    db.Articles.Find(Convert.ToInt32(wade)).GroupId = 0;
                     db.SaveChanges();
                     break;
             }
