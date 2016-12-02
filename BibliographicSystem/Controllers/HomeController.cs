@@ -40,8 +40,7 @@ namespace BibliographicSystem.Controllers
         {
             db.Articles.Find(idArticle).GroupId = idGroup;
             db.SaveChanges();
-            var a = new AddingToGroup { UserName = User.Identity.Name, GroupId = idGroup };
-            return View("AddArticleToGroup", a);
+            return View("AddArticleToGroup", new AddingToGroup { UserName = User.Identity.Name, GroupId = idGroup });
         }
 
         [HttpPost]
@@ -136,9 +135,9 @@ namespace BibliographicSystem.Controllers
 
         public FileResult GetBibFile(int id)
         {
-            var a = db.Articles.Find(id);
-            var filePath = "~/BibFiles/" + a.Title.Split('.') + ".bib";
-            var fileName = a.Title.Split('.') + ".bib";
+            var article = db.Articles.Find(id);
+            var filePath = "~/BibFiles/" + article.Title.Split('.') + ".bib";
+            var fileName = article.Title.Split('.') + ".bib";
             return File(filePath, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
@@ -346,8 +345,7 @@ namespace BibliographicSystem.Controllers
                     db.SaveChanges();
                     break;
                 default:
-                    var a = db.Articles.Find(Convert.ToInt32(wade));
-                    a.GroupId = 0;
+                    db.Articles.Find(Convert.ToInt32(wade)).GroupId = 0;
                     db.SaveChanges();
                     break;
             }
