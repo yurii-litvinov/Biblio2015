@@ -66,7 +66,20 @@ namespace BibliographicSystem.SearchingMethods
             MakeGetRequest();
             foreach (var element in rootObject.entities)
             {
-                listOfArticles.Add(new MicrosoftAcademicArticle { Title = element.Ti, Year = element.Y });
+                var article = new MicrosoftAcademicArticle
+                {
+                    PaperTitle = element.Ti,
+                    PaperYear = element.Y,
+                    CitationCount = element.CC
+                };
+                article.Authors = new List<Author>();
+
+                foreach (var author in element.AA)
+                {
+                    article.Authors.Add(new Author { AuthorName = author.AuN, AuthorId = author.AuId } );
+                }
+
+                listOfArticles.Add(article);
             }
 
             return listOfArticles;
@@ -82,12 +95,12 @@ namespace BibliographicSystem.SearchingMethods
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "a89fcc82bd8049738b2f76c667f0f52c");
 
             // Request parameters
-            queryString["expr"] = "Composite(AA.AuN=='jaime teevan')";
+            queryString["expr"] = "W=='" + query + "'"; //"(AA.AuN=='jaime teevan')";
             queryString["model"] = "latest";
             queryString["count"] = "10";
             queryString["offset"] = "0";
             queryString["orderby"] = "";
-            queryString["attributes"] = "";
+            queryString["attributes"] = "Ti,Y,AA.AuN,AA.AuId,CC";
             var uri = "https://api.projectoxford.ai/academic/v1.0/evaluate?" + queryString;
 
             var response = client.GetAsync(uri).Result;

@@ -278,6 +278,7 @@
     <Content Include="Views\Shared\_LogInPartial.cshtml" />
     <Content Include="Views\Scholar\SearchOnScholarResult.cshtml" />
     <Content Include="Views\MicrosoftAcademic\SearchOnMicrosoftAcademic.cshtml" />
+    <Content Include="Views\MicrosoftAcademic\SearchResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\People\" />
