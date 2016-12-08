@@ -26,6 +26,7 @@ namespace BibliographicSystem.Controllers
 
         public PartialViewResult SearchResult(string query)
         {
+            query += "";
             if (query.Length == 0)
             {
                 return PartialView("SearchResult", new List<MicrosoftAcademicArticle>());
