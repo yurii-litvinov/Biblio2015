@@ -24,7 +24,7 @@ namespace BibliographicSystem.Controllers
         /// <returns> Page for Microsoft Academic searching </returns>
         public ActionResult SearchOnMicrosoftAcademic(string query) => View("SearchOnMicrosoftAcademic", "");
 
-        public PartialViewResult SearchResult(string query)
+        public PartialViewResult SearchResult(string query, int count, string author, int year)
         {
             query += "";
             if (query.Length == 0)

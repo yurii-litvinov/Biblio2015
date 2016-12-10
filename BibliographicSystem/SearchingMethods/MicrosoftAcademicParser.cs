@@ -30,7 +30,7 @@ namespace BibliographicSystem.SearchingMethods
             rootObject = new RootObject();
         }
 
-
+        #region классы для десериализации json
         public class AA
         {
             public string AuN { get; set; }
@@ -59,6 +59,8 @@ namespace BibliographicSystem.SearchingMethods
                 return new RootObject();
             }
         }
+
+        #endregion
 
         public List<MicrosoftAcademicArticle> GetSearchResult()
         {
@@ -91,11 +93,13 @@ namespace BibliographicSystem.SearchingMethods
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
 
+            var keywords = query.Split(' ');
+
             // Request headers
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "a89fcc82bd8049738b2f76c667f0f52c");
 
             // Request parameters
-            queryString["expr"] = "W=='" + query + "'"; //"(AA.AuN=='jaime teevan')";
+            queryString["expr"] = "W=='" + query + "'";
             queryString["model"] = "latest";
             queryString["count"] = "10";
             queryString["offset"] = "0";
