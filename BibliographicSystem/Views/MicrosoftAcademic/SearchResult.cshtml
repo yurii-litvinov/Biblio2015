@@ -11,21 +11,54 @@
     </div>
 }
 
-@foreach (var art in Model)
-{
+<div class="panel-group" id="accordion">
+    @for (int i = 0; i < Model.Count; ++i)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    @{ 
+                        string href = "#collapse" + i.ToString();
+                    }
+                    <a data-toggle="collapse" data-parent="#accordion" href="@href">
+                        @Model[i].PaperTitle
+                    </a>
+                </h4>
+            </div>
+
+            @{
+                string collapseId = "collapse" + i.ToString();
+            }
+
+            <div id="@collapseId" class="panel-collapse collapse in">
+                <ul class="list-group">
+                    <li class="list-group-item">@Model[i].CitationCount</li>
+                    <li class="list-group-item">@Model[i].PaperYear</li>
+                </ul>
+                <div class="panel-footer">Footer</div>
+            </div>
+        </div>
+    }
+</div> 
+
+
+
+
+<!--{
     {
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title">@art.PaperTitle</h3>
+                <h3 class="panel-title">art.PaperTitle</h3>
             </div>
             <div class="panel-body">
                 <ul class="list-group">
-                    <li class="list-group-item">@art.PaperTitle</li>
-                    <li class="list-group-item">@art.PaperYear</li>
-                    <li class="list-group-item">@art.CitationCount</li>
-                    
+                    <li class="list-group-item"></li>
+                    <li class="list-group-item"></li>
+                    <li class="list-group-item"></li>
+
                 </ul>
             </div>
         </div>
     }
 }
+    -->
