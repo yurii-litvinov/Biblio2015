@@ -24,9 +24,9 @@ namespace BibliographicSystem.SearchingMethods
     /// </summary>
     public class MicrosoftAcademicParser
     {
-        public MicrosoftAcademicParser(string query)
+        public MicrosoftAcademicParser(UserQuery userQuery)
         {
-            this.query = query;
+            this.userQuery = userQuery;
             rootObject = new RootObject();
         }
 
@@ -62,6 +62,13 @@ namespace BibliographicSystem.SearchingMethods
 
         #endregion
 
+        public class UserQuery
+        {
+            public string MainInput { get; set; }
+            public string Authors { get; set; }
+            public string Year { get; set; }
+        }
+
         public List<MicrosoftAcademicArticle> GetSearchResult()
         {
             var listOfArticles = new List<MicrosoftAcademicArticle>();
@@ -93,13 +100,11 @@ namespace BibliographicSystem.SearchingMethods
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
 
-            var keywords = query.Split(' ');
-
             // Request headers
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "a89fcc82bd8049738b2f76c667f0f52c");
 
             // Request parameters
-            queryString["expr"] = "W=='" + query + "'";
+            queryString["expr"] = GetExpression();
             queryString["model"] = "latest";
             queryString["count"] = "10";
             queryString["offset"] = "0";
@@ -116,7 +121,48 @@ namespace BibliographicSystem.SearchingMethods
             }
         }
 
-        private string query;
+        private string GetExpression()
+        {
+            var listOfExpr = new List<string>();
+            var expression = "And(";
+
+            if (userQuery.Authors.Length != 0)
+            {
+                var inputtedAuthors = userQuery.Authors.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                expression += "Or(";
+                foreach (var author in inputtedAuthors)
+                {
+                    expression += "Composite(AA.AuN='" + author + "'),";
+                }
+
+                expression = expression.Remove(expression.Length - 1, 1);
+                expression += ")";
+            }
+            
+            if (userQuery.MainInput.Length != 0)
+            {
+                var inputtedWords = userQuery.MainInput.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                expression += ",Or(";
+                foreach (var word in inputtedWords)
+                {
+                    expression += "W='" + word + "',";
+                }
+
+                expression = expression.Remove(expression.Length - 1, 1);
+                expression += ")";
+            }
+            
+            if (userQuery.Year.Length != 0)
+            {
+                expression += ",Y=" + userQuery.Year;
+            }
+
+            expression += ")";
+            return expression;
+        }
+
+
+        private UserQuery userQuery;
         private RootObject rootObject;
     }
 }
