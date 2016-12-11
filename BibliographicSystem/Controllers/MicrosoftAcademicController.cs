@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BibliographicSystem.SearchingMethods;
+using static BibliographicSystem.SearchingMethods.MicrosoftAcademicParser;
 
 namespace BibliographicSystem.Controllers
 {
@@ -24,7 +25,7 @@ namespace BibliographicSystem.Controllers
         /// <returns> Page for Microsoft Academic searching </returns>
         public ActionResult SearchOnMicrosoftAcademic(string query) => View("SearchOnMicrosoftAcademic", "");
 
-        public PartialViewResult SearchResult(string query, int count, string author, int year)
+        public PartialViewResult SearchResult(string query = "", int count = 0, string author = "", string year = "")
         {
             query += "";
             if (query.Length == 0)
@@ -32,7 +33,8 @@ namespace BibliographicSystem.Controllers
                 return PartialView("SearchResult", new List<MicrosoftAcademicArticle>());
             }
 
-            var parser = new MicrosoftAcademicParser(query);
+            var userQuery = new UserQuery { MainInput = query, Authors = author, Year = year };
+            var parser = new MicrosoftAcademicParser(userQuery);
             var listOfArticles = parser.GetSearchResult();
             return PartialView("SearchResult", listOfArticles);
         }
