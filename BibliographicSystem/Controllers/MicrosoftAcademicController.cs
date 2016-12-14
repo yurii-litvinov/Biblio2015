@@ -25,20 +25,17 @@ namespace BibliographicSystem.Controllers
         /// <returns> Page for Microsoft Academic searching </returns>
         public ActionResult SearchOnMicrosoftAcademic(string query) => View("SearchOnMicrosoftAcademic", "");
 
-        public PartialViewResult SearchResult(string query = "", int count = 0, string author = "", string year = "")
+        public PartialViewResult SearchResult(string query = "", string count = "", string author = "", string year = "")
         {
-            query += "";
             if (query.Length == 0)
             {
                 return PartialView("SearchResult", new List<MicrosoftAcademicArticle>());
             }
 
-            var userQuery = new UserQuery { MainInput = query, Authors = author, Year = year };
+            var userQuery = new UserQuery { MainInput = query.ToLower(), Authors = author.ToLower(), Year = year, Count = count };
             var parser = new MicrosoftAcademicParser(userQuery);
             var listOfArticles = parser.GetSearchResult();
             return PartialView("SearchResult", listOfArticles);
         }
-
-
     }
 }
