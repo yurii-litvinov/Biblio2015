@@ -18,24 +18,46 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     @{ 
-                        string href = "#collapse" + i.ToString();
+                        string collapse = "#collapse" + i.ToString();
+                        string description = "#description" + i.ToString();
+                        string reference = "#reference" + i.ToString();
                     }
-                    <a data-toggle="collapse" data-parent="#accordion" href="@href">
-                        @Model[i].PaperTitle
+                    <a data-toggle="collapse" data-parent="#accordion" href="@collapse">
+                        @Model[i].Title
                     </a>
                 </h4>
             </div>
 
             @{
                 string collapseId = "collapse" + i.ToString();
+                string descriptionId = "description" + i.ToString();
+                string referenceId = "reference" + i.ToString();
             }
 
-            <div id="@collapseId" class="panel-collapse collapse in">
+            <div id="@collapseId" class="panel-collapse collapse">
                 <ul class="list-group">
-                    <li class="list-group-item">@Model[i].CitationCount</li>
-                    <li class="list-group-item">@Model[i].PaperYear</li>
+                    <li class="list-group-item">
+                        <a href="@description" data-toggle="collapse">Описание</a>
+                        <div id="@descriptionId" class="collapse">
+                            @Model[i].Description
+                        </div>
+                    </li>
+                    <li class="list-group-item">Количество цитирований @Model[i].CitationCount</li>
+                    <li class="list-group-item">Год публикации @Model[i].Year</li>
+                    <li class="list-group-item">Метаданные @Model[i].ExtendedMetadata</li>
+
                 </ul>
-                <div class="panel-footer">Footer</div>
+                <div class="panel-footer">
+                    <a href="@reference" data-toggle="collapse">Ссылки</a>
+                    <div id="@referenceId" class="collapse">
+
+                            @foreach (var refart in Model[i].References)
+                            {
+                                <a class="list-group-item" name="@refart" href="@refart">@refart</a>
+                            }
+
+                    </div>
+                </div>
             </div>
         </div>
     }
