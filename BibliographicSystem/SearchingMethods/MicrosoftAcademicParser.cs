@@ -120,14 +120,17 @@ namespace BibliographicSystem.SearchingMethods
             {
 
                 count = (Convert.ToInt32(count) - listOfArticles.Count).ToString();
-                MakeGetRequest(expression, count);
+                var responseStatusCode = MakeGetRequest(expression, count);
 
-                foreach (var element in rootObject.entities)
+                if (responseStatusCode == HttpStatusCode.OK)
                 {
-                    var article = CopyData(element);
-                    listOfArticles.Add(article);
+                    foreach (var element in rootObject.entities)
+                    {
+                        var article = CopyData(element);
+                        listOfArticles.Add(article);
+                    }
                 }
-
+                
                 if (listOfArticles.Count.ToString() == userQuery.Count)
                 {
                     break;
@@ -139,11 +142,11 @@ namespace BibliographicSystem.SearchingMethods
         }
 
         /// <summary>
-        /// makes get request to Microsoft Academic
+        /// makes get request to Microsoft Academic and returns response status code
         /// </summary>
         /// <param name="expression">valid query string</param>
         /// <param name="count">the number of articles, that the user wants to see</param>
-        private void MakeGetRequest(string expression, string count)
+        private HttpStatusCode MakeGetRequest(string expression, string count)
         {
             var client = new HttpClient();
             var queryString = HttpUtility.ParseQueryString(string.Empty);
@@ -167,6 +170,8 @@ namespace BibliographicSystem.SearchingMethods
                 var json = response.Content.ReadAsStringAsync().Result;
                 rootObject = JsonConvert.DeserializeObject<Response>(json, new ResponseConverter());
             }
+
+            return response.StatusCode;
         }
 
         /// <summary>
@@ -175,47 +180,72 @@ namespace BibliographicSystem.SearchingMethods
         /// <returns></returns>
         private List<string> GetListOfExpr()
         {
-            var listOfExpr = new List<string>();
-            var expression = "And(";
-
+            var authorsInQuery = "";
             if (userQuery.Authors.Length != 0)
             {
                 var inputtedAuthors = userQuery.Authors.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                expression += "Or(";
                 foreach (var author in inputtedAuthors)
                 {
-                    expression += "Composite(AA.AuN='" + author + "'),";
+                    var fullName = author.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    authorsInQuery += ",Composite(AA.AuN=='";
+                    foreach (var word in fullName)
+                    {
+                        authorsInQuery += word + ' ';
+                    }
+
+                    authorsInQuery = authorsInQuery.Remove(authorsInQuery.Length - 1);
+                    authorsInQuery += "')";
                 }
 
-                expression = expression.Remove(expression.Length - 1, 1);
-                expression += "),";
+                authorsInQuery = authorsInQuery.Substring(1);  /// without ,
+                authorsInQuery = '(' + authorsInQuery + ')';
             }
-            
+
+            var wordsInQuery = "";
             if (userQuery.MainInput.Length != 0)
             {
                 var inputtedWords = userQuery.MainInput.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                expression += "Or(";
                 foreach (var word in inputtedWords)
                 {
-                    expression += "W='" + word + "',";
+                    wordsInQuery += ",W=='" + word + "'";
                 }
 
-                expression = expression.Remove(expression.Length - 1, 1);
-                expression += ")";
+                wordsInQuery = wordsInQuery.Substring(1);  /// without ,
+                wordsInQuery = '(' + wordsInQuery + ')';
+            }    
+
+            var orWordsInQuery = "";
+            var andWordsInQuery = "";
+            if (wordsInQuery.Length != 0)
+            {
+                orWordsInQuery = "Or" + wordsInQuery + ",";
+                andWordsInQuery = "And" + wordsInQuery + ",";
             }
 
+            var orAuthorsInQuery = "";
+            var andAuthorsInQuery = "";
+            if (authorsInQuery.Length != 0)
+            {
+                orAuthorsInQuery = "Or" + authorsInQuery + ",";
+                andAuthorsInQuery = "And" + authorsInQuery + ",";
+            }
+
+            var yearInQuery = "";
             if (userQuery.Year.Length != 0)
             {
-                expression += ",Y=" + userQuery.Year;
+                yearInQuery = "Y=" + userQuery.Year + ",";
             }
 
-            expression += ")";
-            listOfExpr.Add(expression);
+            var and = andAuthorsInQuery + andWordsInQuery + yearInQuery;
+            var or = orAuthorsInQuery + orWordsInQuery + yearInQuery;
+            and = and.Remove(and.Length - 1);
+            or = or.Remove(or.Length - 1);
 
-            /// replace "And" to "Or"
-            expression = "Or" + expression.Remove(0, 3);
-            listOfExpr.Add(expression);
-
+            var listOfExpr = new List<string>();
+            listOfExpr.Add("And(" + and + ")");
+            listOfExpr.Add("And(" + or + ")");
+            listOfExpr.Add("Or(" + and + ")");
+            listOfExpr.Add("Or(" + or + ")");
             return listOfExpr;
         }
 
