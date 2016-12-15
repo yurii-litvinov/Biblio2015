@@ -19,47 +19,59 @@
                 <h4 class="panel-title">
                     @{ 
                         string collapse = "#collapse" + i.ToString();
+                        string collapseId = "collapse" + i.ToString();
+
                         string description = "#description" + i.ToString();
+                        string descriptionId = "description" + i.ToString();
+
                         string reference = "#reference" + i.ToString();
+                        string referenceId = "reference" + i.ToString();
+
+                        string authors = "#author" + i.ToString();
+                        string authorsId = "author" + i.ToString();
                     }
                     <a data-toggle="collapse" data-parent="#accordion" href="@collapse">
                         @Model[i].Title
                     </a>
                 </h4>
             </div>
-
-            @{
-                string collapseId = "collapse" + i.ToString();
-                string descriptionId = "description" + i.ToString();
-                string referenceId = "reference" + i.ToString();
-            }
-
-            <div id="@collapseId" class="panel-collapse collapse">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <a href="@description" data-toggle="collapse">Описание</a>
-                        <div id="@descriptionId" class="collapse">
-                            @Model[i].Description
-                        </div>
-                    </li>
-                    <li class="list-group-item">Количество цитирований @Model[i].CitationCount</li>
-                    <li class="list-group-item">Год публикации @Model[i].Year</li>
-                    <li class="list-group-item">Метаданные @Model[i].ExtendedMetadata</li>
-
-                </ul>
-                <div class="panel-footer">
-                    <a href="@reference" data-toggle="collapse">Ссылки</a>
-                    <div id="@referenceId" class="collapse">
+                <div id="@collapseId" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item-info">
+                                <a href="@description" data-toggle="collapse">Описание</a>
+                                <div id="@descriptionId" class="collapse">
+                                    @Model[i].Description
+                                </div>
+                            </li>
+                            <li class="list-group-item">Количество цитирований @Model[i].CitationCount</li>
+                            <li class="list-group-item">Год публикации @Model[i].Year</li>
+                            <li class="list-group-item">Авторы: @Model[i].Authors[0].AuthorName
+                                <a href="@authors" data-toggle="collapse">...</a>
+                                <div id="@authorsId" class="collapse"> 
+                                    @foreach (var author in Model[i].Authors)
+                                    {
+                                        <div>@author.AuthorName</div>;
+                                    }
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="panel-footer">
+                        <a href="@reference" data-toggle="collapse">Ссылки</a>
+                        <div id="@referenceId" class="collapse">
 
                             @foreach (var refart in Model[i].References)
                             {
                                 <a class="list-group-item" name="@refart" href="@refart">@refart</a>
                             }
 
+                        </div>
                     </div>
                 </div>
-            </div>
         </div>
+        <br />
     }
 </div> 
 
