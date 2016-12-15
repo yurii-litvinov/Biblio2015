@@ -1,5 +1,4 @@
 ﻿@model List<BibliographicSystem.Models.ScholarArticle>
-@Html.ValidationMessage("Empty list")
 
 @if (Model.Count != 0)
 {
@@ -7,6 +6,15 @@
         <div class="col-md-1"></div>
         <div class="col-md-2">
             <h3>Список статей</h3>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-6">
+            <h3>По вашему запросу ничего не найдено</h3>
         </div>
     </div>
 }
@@ -29,7 +37,7 @@
                             using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
                             {
                                 <input type="text" name="title" value="@art.Title" hidden="true" />
-                                    <input type="text" name="info" value="@art.Info" hidden="true" />
+                                <input type="text" name="info" value="@art.Info" hidden="true" />
                                     <input type="text" name="reference" value="@art.Reference" hidden="true" />
                                     <input type="text" name="username" value="@User.Identity.Name" hidden="true" />
                                     <button type="submit" class="btn btn-default">Добавить статью</button>
@@ -39,7 +47,7 @@
                         @using (Html.BeginForm("DownloadBibTeX", "Scholar", FormMethod.Post))
                         {
                             <input type="text" name="title" value="@art.Title" hidden="true" />
-                                <input type="text" name="info" value="@art.Info" hidden="true" />
+                            <input type="text" name="info" value="@art.Info" hidden="true" />
                                 <input type="text" name="reference" value="@art.Reference" hidden="true" />
                                 <button type="submit" class="btn btn-default">Скачать BibTeX</button>
                         }

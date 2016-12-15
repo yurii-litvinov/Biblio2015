@@ -4,7 +4,6 @@
     ViewBag.Title = "SignIn";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-}
 
 <br>
 <br>
@@ -18,15 +17,19 @@
                 <label for="Username" class="sr-only">Username</label>
                 <input type="text" name="Username" id="Username" class="form-control" placeholder="Username" required autofocus>
                 @Html.ValidationMessageFor(model => model.Username)
+                <h6></h6>
                 <label for="Email" class="sr-only">Email</label>
                 <input type="text" name="Email" id="Email" class="form-control" placeholder="Email" required autofocus>
                 @Html.ValidationMessageFor(model => model.Email)
+                <h6></h6>
                 <label for="Password" class="sr-only">Password</label>
                 <input type="password" name="Password" id="Password" class="form-control" placeholder="Password" required>
                 @Html.ValidationMessageFor(model => model.Password)
+                <h6></h6>
                 <label for="ConfirmPassword" class="sr-only">ConfirmPassword</label>
                 <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" required autofocus>
                 @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                <h6></h6>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
             </form>
         </div> <!-- col -->

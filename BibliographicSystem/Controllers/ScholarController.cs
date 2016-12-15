@@ -37,9 +37,9 @@ namespace BibliographicSystem.Controllers
         /// <param name="dateStart"> Since date </param>
         /// <param name="dateEnd"> Till date </param>
         /// <returns> Block of Scholar articles </returns>
-        public PartialViewResult SearchOnScholarResult(string query = "", 
+        public PartialViewResult SearchOnScholarResult(string query = "",
             int number = 10,
-            string exactPhrase = null, 
+            string exactPhrase = null,
             string without = null,
             bool head = false,
             string published = null,
@@ -64,13 +64,11 @@ namespace BibliographicSystem.Controllers
                     resultList.RemoveRange(number, resultList.Count - number);
                 if (resultList.Count != 0)
                     return PartialView("SearchOnScholarResult", resultList);
-
-                ModelState.AddModelError("Empty list", "Ничего не найдено");
+                
                 return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
             }
             catch (NullReferenceException)
             {
-                ModelState.AddModelError("Empty list", "Ничего не найдено");
                 return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
             }
         }
