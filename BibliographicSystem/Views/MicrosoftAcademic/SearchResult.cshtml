@@ -38,12 +38,6 @@
                 <div id="@collapseId" class="panel-collapse collapse">
                     <div class="panel-body">
                         <ul class="list-group">
-                            <li class="list-group-item-info">
-                                <a href="@description" data-toggle="collapse">Описание</a>
-                                <div id="@descriptionId" class="collapse">
-                                    @Model[i].Description
-                                </div>
-                            </li>
                             <li class="list-group-item">Количество цитирований @Model[i].CitationCount</li>
                             <li class="list-group-item">Год публикации @Model[i].Year</li>
                             <li class="list-group-item">Авторы: @Model[i].Authors[0].AuthorName
@@ -53,6 +47,12 @@
                                     {
                                         <div>@author.AuthorName</div>;
                                     }
+                                </div>
+                            </li>
+                            <li class="list-group-item-info">
+                                <a href="@description" data-toggle="collapse">Описание</a>
+                                <div id="@descriptionId" class="collapse">
+                                    @Model[i].Description
                                 </div>
                             </li>
                         </ul>
@@ -74,25 +74,3 @@
         <br />
     }
 </div> 
-
-
-
-
-<!--{
-    {
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">art.PaperTitle</h3>
-            </div>
-            <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item"></li>
-                    <li class="list-group-item"></li>
-                    <li class="list-group-item"></li>
-
-                </ul>
-            </div>
-        </div>
-    }
-}
-    -->
