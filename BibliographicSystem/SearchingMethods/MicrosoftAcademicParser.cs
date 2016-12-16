@@ -1,24 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-
-
-using System.Net.Http.Headers;
-using System.Text;
 using System.Net.Http;
-
-using System.IO;
 using System.Net;
 using Newtonsoft.Json;
 using BibliographicSystem.Models;
-
+using System.Linq;
 
 namespace BibliographicSystem.SearchingMethods
 {
-    
-
-
     /// <summary>
     /// class for parsing get requests from MicrosoftAcademic
     /// </summary>
@@ -27,74 +17,8 @@ namespace BibliographicSystem.SearchingMethods
         public MicrosoftAcademicParser(UserQuery userQuery)
         {
             this.userQuery = userQuery;
-            rootObject = new Response();
+            response = new Response();
         }
-
-        #region классы для десериализации json
-        public class AA
-        {
-            public string AuN { get; set; }
-            public long AuId { get; set; }
-        }
-
-        public class Entity
-        {
-            public double prob { get; set; }
-            public string Ti { get; set; }
-            public int Y { get; set; }
-            public int CC { get; set; }
-            public string E { get; set; }
-            public List<AA> AA { get; set; }
-        }
-
-        public class Response
-        {
-            public string expr { get; set; }
-            public List<Entity> entities { get; set; }
-        }
-
-        public class ResponseConverter : Newtonsoft.Json.Converters.CustomCreationConverter<Response>
-        {
-            public override Response Create(Type objectType)
-            {
-                return new Response();
-            }
-        }
-
-        public class MetadataConverter : Newtonsoft.Json.Converters.CustomCreationConverter<Extended>
-        {
-            public override Extended Create(Type objectType)
-            {
-                return new Extended();
-            }
-        }
-
-        /// <summary>
-        /// for deserialization extended metadata
-        /// </summary>
-        public class S
-        {
-            public int Ty { get; set; }
-            public string U { get; set; }
-        }
-
-        /// <summary>
-        /// for deserialization extended metadata
-        /// </summary>
-        public class Extended
-        {
-            public string DN { get; set; }
-            public string D { get; set; }
-            public IList<S> S { get; set; }
-            public string VFN { get; set; }
-            public int V { get; set; }
-            public int I { get; set; }
-            public int FP { get; set; }
-            public int LP { get; set; }
-            public string DOI { get; set; }
-        }
-
-        #endregion
 
         /// <summary>
         /// a class for storing precise user request
@@ -124,11 +48,7 @@ namespace BibliographicSystem.SearchingMethods
 
                 if (responseStatusCode == HttpStatusCode.OK)
                 {
-                    foreach (var element in rootObject.entities)
-                    {
-                        var article = CopyData(element);
-                        listOfArticles.Add(article);
-                    }
+                    listOfArticles.AddRange(response.entities.Select(CopyData));
                 }
                 
                 if (listOfArticles.Count.ToString() == userQuery.Count)
@@ -138,7 +58,6 @@ namespace BibliographicSystem.SearchingMethods
             }
             
             return listOfArticles;
-
         }
 
         /// <summary>
@@ -168,7 +87,7 @@ namespace BibliographicSystem.SearchingMethods
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var json = response.Content.ReadAsStringAsync().Result;
-                rootObject = JsonConvert.DeserializeObject<Response>(json, new ResponseConverter());
+                this.response = JsonConvert.DeserializeObject<Response>(json, new ResponseConverter());
             }
 
             return response.StatusCode;
@@ -188,16 +107,12 @@ namespace BibliographicSystem.SearchingMethods
                 {
                     var fullName = author.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     authorsInQuery += ",Composite(AA.AuN=='";
-                    foreach (var word in fullName)
-                    {
-                        authorsInQuery += word + ' ';
-                    }
-
+                    authorsInQuery = fullName.Aggregate(authorsInQuery, (current, word) => current + (word + ' '));
                     authorsInQuery = authorsInQuery.Remove(authorsInQuery.Length - 1);
                     authorsInQuery += "')";
                 }
 
-                authorsInQuery = authorsInQuery.Substring(1);  /// without ,
+                authorsInQuery = authorsInQuery.Substring(1);  // without ,
                 authorsInQuery = '(' + authorsInQuery + ')';
             }
 
@@ -205,12 +120,8 @@ namespace BibliographicSystem.SearchingMethods
             if (userQuery.MainInput.Length != 0)
             {
                 var inputtedWords = userQuery.MainInput.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var word in inputtedWords)
-                {
-                    wordsInQuery += ",W=='" + word + "'";
-                }
-
-                wordsInQuery = wordsInQuery.Substring(1);  /// without ,
+                wordsInQuery = inputtedWords.Aggregate(wordsInQuery, (current, word) => current + ",W=='" + word + "'");
+                wordsInQuery = wordsInQuery.Substring(1);  // without ,
                 wordsInQuery = '(' + wordsInQuery + ')';
             }    
 
@@ -256,16 +167,17 @@ namespace BibliographicSystem.SearchingMethods
         /// <returns></returns>
         private MicrosoftAcademicArticle CopyData(Entity entity)
         {
-            Extended extendedMetadata = JsonConvert.DeserializeObject<Extended>(entity.E, new MetadataConverter());
+            var extendedMetadata = JsonConvert.DeserializeObject<Extended>(entity.E, new MetadataConverter());
             var article = new MicrosoftAcademicArticle
             {
                 Year = entity.Y,
                 CitationCount = entity.CC,
                 ExtendedMetadata = entity.E,
                 Title = extendedMetadata.DN,
+                References = new List<string>(),
+                Authors = new List<Author>()
             };
 
-            article.References = new List<string>();
             if (extendedMetadata.S != null)
             {
                 foreach (var reference in extendedMetadata.S)
@@ -274,7 +186,6 @@ namespace BibliographicSystem.SearchingMethods
                 }
             }
 
-            article.Authors = new List<Author>();
             if (entity.AA != null)
             {
                 foreach (var author in entity.AA)
@@ -283,11 +194,140 @@ namespace BibliographicSystem.SearchingMethods
                 }
             }
 
-            article.Description = extendedMetadata.D == null ? "¯\\_(ツ)_/¯" : extendedMetadata.D;
+            article.Description = extendedMetadata.D ?? "¯\\_(ツ)_/¯";
             return article;
         }
 
         private UserQuery userQuery;
-        private Response rootObject;
+        private Response response;
+
+        #region классы для десериализации json
+        /// <summary>
+        /// author of article
+        /// </summary>
+        private class AA
+        {
+            /// <summary>
+            /// author name
+            /// </summary>
+            public string AuN { get; set; }
+            /// <summary>
+            /// author Id
+            /// </summary>
+            public long AuId { get; set; }
+        }
+
+        /// <summary>
+        /// this class represents an article
+        /// </summary>
+        private class Entity
+        {
+            public double prob { get; set; }
+            /// <summary>
+            /// title of article
+            /// </summary>
+            public string Ti { get; set; }
+            /// <summary>
+            /// the year of publication of article
+            /// </summary>
+            public int Y { get; set; }
+            /// <summary>
+            /// citation count
+            /// </summary>
+            public int CC { get; set; }
+            /// <summary>
+            /// Extended metadata
+            /// </summary>
+            public string E { get; set; }
+            /// <summary>
+            /// authors
+            /// </summary>
+            public List<AA> AA { get; set; }
+        }
+
+        /// <summary>
+        /// this class represents response message from Microsoft Academic Api
+        /// </summary>
+        private class Response
+        {
+            public string expr { get; set; }
+            public List<Entity> entities { get; set; }
+        }
+
+        /// <summary>
+        /// converter for json deserialization
+        /// </summary>
+        private class ResponseConverter : Newtonsoft.Json.Converters.CustomCreationConverter<Response>
+        {
+            public override Response Create(Type objectType) => new Response();
+        }
+
+        /// <summary>
+        /// converter for json deserialization
+        /// </summary>
+        private class MetadataConverter : Newtonsoft.Json.Converters.CustomCreationConverter<Extended>
+        {
+            public override Extended Create(Type objectType) => new Extended();
+        }
+
+        /// <summary>
+        /// link to article
+        /// </summary>
+        private class S
+        {
+            /// <summary>
+            /// the link type
+            /// </summary>
+            public int Ty { get; set; }
+            /// <summary>
+            /// the link itself
+            /// </summary>
+            public string U { get; set; }
+        }
+
+        /// <summary>
+        /// this class represents extended metadata of article
+        /// </summary>
+        private class Extended
+        {
+            /// <summary>
+            /// name of article
+            /// </summary>
+            public string DN { get; set; }
+            /// <summary>
+            /// description
+            /// </summary>
+            public string D { get; set; }
+            /// <summary>
+            /// list of references
+            /// </summary>
+            public IList<S> S { get; set; }
+            /// <summary>
+            /// Venue Full Name - full name of the Journal or Conference
+            /// </summary>
+            public string VFN { get; set; }
+            /// <summary>
+            /// journal volume
+            /// </summary>
+            public int V { get; set; }
+            /// <summary>
+            /// journal issue
+            /// </summary>
+            public int I { get; set; }
+            /// <summary>
+            /// first page of paper
+            /// </summary>
+            public int FP { get; set; }
+            /// <summary>
+            /// last page of paper
+            /// </summary>
+            public int LP { get; set; }
+            /// <summary>
+            /// Digital Object Identifier
+            /// </summary>
+            public string DOI { get; set; }
+        }
+
+        #endregion
     }
 }
