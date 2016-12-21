@@ -24,7 +24,7 @@ namespace BibliographicSystemTests.Controllers
         /// <summary>
         /// Usual search test
         /// </summary>
-        [TestMethod]
+        /*[TestMethod]
         public void SearchOnScholarResultTest2()
         {
             var controller = new ScholarController();
@@ -94,6 +94,6 @@ namespace BibliographicSystemTests.Controllers
             var info = list.Select(article => article.Title).ToList();
             var count = info.Select(inf => inf.ToLower()).Count(lowerHead => lowerHead.Contains("перельман") || lowerHead.Contains("гипотеза") || lowerHead.Contains("пуанкаре"));
             Assert.IsTrue(count > 2);
-        }
+        }*/
     }
 }
