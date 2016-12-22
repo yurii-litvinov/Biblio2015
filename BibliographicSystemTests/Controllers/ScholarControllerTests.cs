@@ -17,7 +17,7 @@ namespace BibliographicSystemTests.Controllers
         {
             var controller = new ScholarController();
             var view = controller.SearchOnScholarResult();
-            var list = (List<ScholarArticle>) view.Model;
+            var list = (List<ScholarArticle>)view.Model;
             Assert.AreEqual(0, list.Count);            
         }
 
