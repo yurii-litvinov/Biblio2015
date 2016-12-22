@@ -16,54 +16,13 @@ namespace BibliographicSystem.SearchingMethods
     /// </summary>
     public class GoogleScholarParser
     {
-        private string GetQueryUrl(string query, 
-            int page,
-            string exactPhrase = null,
-            string without = null,
-            bool head = false,
-            string published = null,
-            string author = null,
-            int dateStart = int.MinValue,
-            int dateEnd = int.MinValue)
-        {
-            query = HttpUtility.UrlEncode(query);
-            if (!string.IsNullOrEmpty(exactPhrase))
-                query += '+' + HttpUtility.UrlEncode('"' + exactPhrase + '"');
-            if (!string.IsNullOrEmpty(without))
-                query += '+' + HttpUtility.UrlEncode('-' + without);
-            if (!string.IsNullOrEmpty(author))
-                query += '+' + HttpUtility.UrlEncode("author:" + author);
-            var url = "http://scholar.google.com/scholar?start="+ page + "&hl=en&q=";
-            query = string.Concat(url, query);
-            if (head)
-                query += "&as_occt = title";
-            if (dateStart  > 0)
-                query += string.Concat("&as_ylo=", HttpUtility.UrlEncode(dateStart.ToString()));
-            if (dateEnd > 0)
-                query += string.Concat("&as_yhi=", HttpUtility.UrlEncode(dateEnd.ToString()));
-            if (published != null)
-                query += string.Concat("&as_publication=", HttpUtility.UrlEncode(published));
-            return query;
-        }
-        
-        private string GetPageContent(string url)
-        {
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            var response = (HttpWebResponse)request.GetResponse();
-            var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
-            var pageContent = streamReader.ReadToEnd();
-            streamReader.Close();
-            pageContent = HttpUtility.HtmlDecode(pageContent);
-            return pageContent;
-        }
-
         public string GetAuthors(string articleInfo)
         {
             var author = new Regex(@"[A-Z]{1,}\s{1}[A-Za-z]{1,}|[А-Я]{1,}\s{1}[А-Яа-я]{1,}");
             var matches = author.Matches(articleInfo);
             var authors = (from Match match in matches select match.Value).ToList();
 
-            var authorsString = "";
+            var authorsString = string.Empty;
             for (var i = 0; i < authors.Count - 1; i++)
                 authorsString += authors.ElementAt(i) + ",";
             authorsString += authors.Last();
@@ -73,8 +32,8 @@ namespace BibliographicSystem.SearchingMethods
 
         public string GetYear(string articleInfo)
         {
-            const string yearPattern = @"\d{4}";
-            var year = new Regex(yearPattern);
+            const string YearPattern = @"\d{4}";
+            var year = new Regex(YearPattern);
             var yearMatch = year.Match(articleInfo);
             return yearMatch.Success ? yearMatch.Value : "no info";
         }
@@ -86,9 +45,9 @@ namespace BibliographicSystem.SearchingMethods
                 return "no info";
             if (articleInfo.IndexOf("…", dashRange.First(), StringComparison.Ordinal) != -1)
                 return "no info";
-            const string journalPattern = @"[^,]{1,}";
-            var journal = new Regex(journalPattern);
-            var journalMatch = journal.Match(articleInfo, (dashRange.First() + 3));
+            const string JournalPattern = @"[^,]{1,}";
+            var journal = new Regex(JournalPattern);
+            var journalMatch = journal.Match(articleInfo, dashRange.First() + 3);
             return journalMatch.Value;
         }
 
@@ -98,25 +57,11 @@ namespace BibliographicSystem.SearchingMethods
             var dashRange = GetDashRange(articleInfo);
             if (dashRange.Contains(-1))
                 return "no info";
-            const string publisherPattern = @".{1,}";
-            var publisher = new Regex(publisherPattern);
-            var publisherMatch = publisher.Match(articleInfo, (dashRange.Last() + 3));
+            const string PublisherPattern = @".{1,}";
+            var publisher = new Regex(PublisherPattern);
+            var publisherMatch = publisher.Match(articleInfo, dashRange.Last() + 3);
 
             return publisherMatch.Value;
-        }
-
-        /// <summary>
-        /// Method for getting dash range, which includes info about year and journal
-        /// </summary>
-        /// <param name="str"></param>
-        private List<int> GetDashRange(string str)
-        {
-            var range = new List<int>();
-            const string dashToFind = " - ";
-            var firstEntry = str.IndexOf(dashToFind, StringComparison.Ordinal);
-            range.Add(firstEntry);
-            range.Add(str.IndexOf(dashToFind, firstEntry + 3, StringComparison.Ordinal));
-            return range;
         }
 
         /// <summary>
@@ -131,10 +76,10 @@ namespace BibliographicSystem.SearchingMethods
             var authors = GetAuthors(articleInfo);
             var year = GetYear(articleInfo);
 
-            const string firstWordPattern = @"[A-Z]{1}[a-z]{1,}";
-            var author = new Regex(firstWordPattern);
+            const string FirstWordPattern = @"[A-Z]{1}[a-z]{1,}";
+            var author = new Regex(FirstWordPattern);
             var authorMatch = author.Match(authors);
-            var firstWordTitle = new Regex(firstWordPattern);
+            var firstWordTitle = new Regex(FirstWordPattern);
             var titleMatch = firstWordTitle.Match(title);
             var name = authorMatch.Value + year + titleMatch.Value;
 
@@ -186,7 +131,8 @@ namespace BibliographicSystem.SearchingMethods
         /// <param name="dateStart"> Since date </param>
         /// <param name="dateEnd"> Till date </param>
         /// <returns> List of articles from Google.Scholar </returns>
-        public List<ScholarArticle> GetScholarArticlesByQuery(string query, 
+        public List<ScholarArticle> GetScholarArticlesByQuery(
+            string query, 
             int page,
             string exactPhrase = null,
             string without = null,
@@ -209,7 +155,8 @@ namespace BibliographicSystem.SearchingMethods
             {
                 var article = new ScholarArticle();
                 var xPathBiblioCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]";
-                //*[@id="gs_ccl_results_results"]/div[1]
+
+                // *[@id="gs_ccl_results_results"]/div[1]
                 var biblioCheck = doc.DocumentNode.SelectSingleNode(xPathBiblioCheck);
                 if (biblioCheck != null)
                 {
@@ -254,7 +201,6 @@ namespace BibliographicSystem.SearchingMethods
 
                         scholarArticles.Add(article);
                     }
-
                     else
                     {
                         // case, when article do not has reference, but has a tag [citiation]/[book]
@@ -283,6 +229,62 @@ namespace BibliographicSystem.SearchingMethods
             }
 
             return scholarArticles;
+        }
+
+        /// <summary>
+        /// Method for getting dash range, which includes info about year and journal
+        /// </summary>
+        /// <param name="str"></param>
+        private List<int> GetDashRange(string str)
+        {
+            var range = new List<int>();
+            const string DashToFind = " - ";
+            var firstEntry = str.IndexOf(DashToFind, StringComparison.Ordinal);
+            range.Add(firstEntry);
+            range.Add(str.IndexOf(DashToFind, firstEntry + 3, StringComparison.Ordinal));
+            return range;
+        }
+
+        private string GetQueryUrl(
+            string query,
+            int page,
+            string exactPhrase = null,
+            string without = null,
+            bool head = false,
+            string published = null,
+            string author = null,
+            int dateStart = int.MinValue,
+            int dateEnd = int.MinValue)
+        {
+            query = HttpUtility.UrlEncode(query);
+            if (!string.IsNullOrEmpty(exactPhrase))
+                query += '+' + HttpUtility.UrlEncode('"' + exactPhrase + '"');
+            if (!string.IsNullOrEmpty(without))
+                query += '+' + HttpUtility.UrlEncode('-' + without);
+            if (!string.IsNullOrEmpty(author))
+                query += '+' + HttpUtility.UrlEncode("author:" + author);
+            var url = "http://scholar.google.com/scholar?start=" + page + "&hl=en&q=";
+            query = string.Concat(url, query);
+            if (head)
+                query += "&as_occt = title";
+            if (dateStart > 0)
+                query += string.Concat("&as_ylo=", HttpUtility.UrlEncode(dateStart.ToString()));
+            if (dateEnd > 0)
+                query += string.Concat("&as_yhi=", HttpUtility.UrlEncode(dateEnd.ToString()));
+            if (published != null)
+                query += string.Concat("&as_publication=", HttpUtility.UrlEncode(published));
+            return query;
+        }
+
+        private string GetPageContent(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            var response = (HttpWebResponse)request.GetResponse();
+            var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
+            var pageContent = streamReader.ReadToEnd();
+            streamReader.Close();
+            pageContent = HttpUtility.HtmlDecode(pageContent);
+            return pageContent;
         }
     }
 }

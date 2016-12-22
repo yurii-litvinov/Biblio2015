@@ -13,7 +13,7 @@ namespace BibliographicSystem.Controllers
     public class ScholarController : Controller
     {
         private readonly AppContext db = new AppContext();
-        //
+
         // GET: /Scholar/
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace BibliographicSystem.Controllers
         /// <param name="query"> Always == null </param>
         /// <returns> Page for Scholar searching </returns>
         public ActionResult SearchOnScholar(string query)
-            => View("SearchOnScholar", "");
+            => View("SearchOnScholar", string.Empty);
 
         /// <summary>
         /// Method for handling Ajax query to search on Scholar
@@ -37,7 +37,8 @@ namespace BibliographicSystem.Controllers
         /// <param name="dateStart"> Since date </param>
         /// <param name="dateEnd"> Till date </param>
         /// <returns> Block of Scholar articles </returns>
-        public PartialViewResult SearchOnScholarResult(string query = "", 
+        public PartialViewResult SearchOnScholarResult(
+            string query = "", 
             int number = 10,
             string exactPhrase = null, 
             string without = null,
@@ -60,6 +61,7 @@ namespace BibliographicSystem.Controllers
                     if (resultList.Count == parsedArticles)
                         break;
                 }
+
                 if (resultList.Count > number)
                     resultList.RemoveRange(number, resultList.Count - number);
                 if (resultList.Count != 0)
@@ -114,6 +116,7 @@ namespace BibliographicSystem.Controllers
                 using (var sw = System.IO.File.CreateText(path))
                     sw.WriteLine(bibDescr);
             }
+
             return Redirect("/Home/Finish");
         }
     }

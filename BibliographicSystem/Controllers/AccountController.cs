@@ -7,9 +7,7 @@ namespace BibliographicSystem.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        //
         // GET: /Account/
-
         public ActionResult LogIn() => View();
 
         [HttpPost]
@@ -24,10 +22,13 @@ namespace BibliographicSystem.Controllers
                     {
                         return Redirect(returnUrl);
                     }
+
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Неправильный пароль или логин");
+
+                ModelState.AddModelError(string.Empty, "Неправильный пароль или логин");
             }
+
             return View(model);
         }
 
@@ -60,13 +61,13 @@ namespace BibliographicSystem.Controllers
                     FormsAuthentication.SetAuthCookie(model.Username, false);
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Ошибка при регистрации");
+
+                ModelState.AddModelError(string.Empty, "Ошибка при регистрации");
             }
+
             return View(model);
         }
 
         public ActionResult Manage() => View(new AddingToSystem());
     }
 }
-
-

@@ -7,29 +7,20 @@ namespace BibliographicSystem.Models
     public class AppContext : DbContext
     {
         public DbSet<Article> Articles { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<Group> Groups { get; set; }
-        public DbSet<UserInGroup> UserInGroups { get; set; }
-        public DbSet<UsersArticle> UsersArticles { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Article>().HasMany(c => c.Tags)
-                .WithMany(s => s.Articles)
-                .Map(t => t.MapLeftKey("ArticleId")
-                    .MapRightKey("TagId")
-                    .ToTable("ArticleTag"));
-        }
+        public DbSet<Tag> Tags { get; set; }
+
+        public DbSet<Group> Groups { get; set; }
+
+        public DbSet<UserInGroup> UserInGroups { get; set; }
+
+        public DbSet<UsersArticle> UsersArticles { get; set; }
 
         public void AddUserInGroup(int id, string name)
         {
-            UserInGroups.Add(new UserInGroup {GroupId = id, UserName = name});
+            UserInGroups.Add(new UserInGroup { GroupId = id, UserName = name });
             SaveChanges();
         }
-
-        private List<int> GroupIdByUser(string name) =>
-            (from item in UserInGroups.ToList() where item.UserName == name select item.GroupId).ToList();
 
         public List<Group> GroupByUser(string name) =>
             Groups.ToList().Where(g => GroupIdByUser(name).Contains(g.GroupId)).ToList();
@@ -45,5 +36,18 @@ namespace BibliographicSystem.Models
 
         public List<Group> SearchGroupList(string name) =>
             Groups.ToList().Where(g => name == g.GroupName).ToList();
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Article>().HasMany(c => c.Tags)
+                .WithMany(s => s.Articles)
+                .Map(t => t.MapLeftKey("ArticleId")
+                    .MapRightKey("TagId")
+                    .ToTable("ArticleTag"));
+        }
+
+        private List<int> GroupIdByUser(string name) =>
+            (from item in UserInGroups.ToList() where item.UserName == name select item.GroupId).ToList();
     }
 }

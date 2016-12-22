@@ -12,8 +12,7 @@ namespace BibliographicSystem.Controllers
     {
         private readonly AppContext db = new AppContext();
         private List<Article> list = new List<Article>();
-
-        //
+        
         // GET: /Home/
         [HttpGet]
         public ActionResult Index()
@@ -84,10 +83,12 @@ namespace BibliographicSystem.Controllers
                 AddTag(new Tag { TagName = tag });
                 db.SaveChanges();
             }
+
             foreach (var tag in newList)
             {
                 listTag.AddRange(db.Tags.ToList().Where(t => t.TagName == tag));
             }
+
             article.Author = author;
             article.Journal = journal;
             article.Note = note;
@@ -110,7 +111,7 @@ namespace BibliographicSystem.Controllers
         [HttpPost]
         public ActionResult MainPage(string search)
         {
-            if (search == "")
+            if (search == string.Empty)
                 return View("MainPage", db.Articles.ToList());
             list = db.SearchByTag(search);
             return View("MainPage", list);
@@ -164,6 +165,7 @@ namespace BibliographicSystem.Controllers
                 if (art.UserName == username)
                     AddBib(textFile, art);
             }
+
             textFile.Close();
             return name;
         }
@@ -179,42 +181,23 @@ namespace BibliographicSystem.Controllers
             {
                 AddBib(textFile, art);
             }
+
             textFile.Close();
             return name;
         }
 
-        private void AddBib(TextWriter textFile, Article art)
-        {
-            switch (art.Type)
-            {
-                case "Статья":
-                    textFile.WriteLine("@ARTICLE{");
-                    break;
-                case "Книга":
-                    textFile.WriteLine("@BOOK{");
-                    break;
-            }
-            textFile.WriteLine("author = {" + art.Author + "},");
-            textFile.WriteLine("title = {«" + art.Title + "»},");
-
-            if (art.Publisher != "")
-                textFile.WriteLine("publisher = {" + art.Publisher + "},");
-
-            if (art.Journal != "")
-                textFile.WriteLine("journal = {" + art.Journal + "},");
-
-            if (art.Year != "")
-                textFile.WriteLine("year = {" + art.Year + "},");
-
-            textFile.WriteLine("note = {" + art.Note + "},");
-            textFile.WriteLine("}");
-        }
-
         [HttpPost]
-        public ActionResult Index(IEnumerable<HttpPostedFileBase> fileUpload, string articleName, string tagList,
-            string author, string year, string journal, string publisher, string note)
+        public ActionResult Index(
+            IEnumerable<HttpPostedFileBase> fileUpload,
+            string articleName,
+            string tagList,
+            string author, 
+            string year, 
+            string journal, 
+            string publisher, 
+            string note)
         {
-            if (articleName == "")
+            if (articleName == string.Empty)
                 return View(new AddingToSystem());
 
             if ((DateTime.Now.Year <= Convert.ToInt32(year)) || (Convert.ToInt32(year) <= 1500))
@@ -230,14 +213,15 @@ namespace BibliographicSystem.Controllers
                     WrongDate = true
                 });
             }
+
             foreach (var file in fileUpload)
             {
-                var filename = "";
+                var filename = string.Empty;
                 if (file != null)
                 {
-                    const string allowFormat = "pdf";
+                    const string AllowFormat = "pdf";
                     var fileExt = Path.GetExtension(file.FileName)?.Substring(1);
-                    if (fileExt != allowFormat)
+                    if (fileExt != AllowFormat)
                     {
                         return View(new AddingToSystem
                         {
@@ -251,9 +235,11 @@ namespace BibliographicSystem.Controllers
                             WrongFile = true
                         });
                     }
+
                     filename = Path.GetFileName(file.FileName);
                     file.SaveAs(Server.MapPath("~/Files/" + filename));
                 }
+
                 var newList = StringToList(tagList);
                 var tags = new List<Tag>();
                 foreach (var tag in newList)
@@ -261,6 +247,7 @@ namespace BibliographicSystem.Controllers
                     AddTag(new Tag { TagName = tag });
                     db.SaveChanges();
                 }
+
                 foreach (var item in newList)
                 {
                     tags.AddRange(db.Tags.ToList().Where(t => t.TagName == item));
@@ -278,6 +265,7 @@ namespace BibliographicSystem.Controllers
                 db.UsersArticles.Add(usersArticle);
                 db.SaveChanges();
             }
+
             return RedirectToAction("Finish");
         }
 
@@ -293,7 +281,7 @@ namespace BibliographicSystem.Controllers
         public List<string> StringToList(string str)
         {
             var newList = new List<string>();
-            var word = "";
+            var word = string.Empty;
             foreach (var character in str)
             {
                 if (character != ' ')
@@ -303,9 +291,10 @@ namespace BibliographicSystem.Controllers
                 else
                 {
                     newList.Add(word);
-                    word = "";
+                    word = string.Empty;
                 }
             }
+
             newList.Add(word);
             return newList;
         }
@@ -318,10 +307,10 @@ namespace BibliographicSystem.Controllers
                 if (tag.TagName == t.TagName)
                     add = false;
             }
+
             if (add)
                 db.Tags.Add(tag);
         }
-
 
         public void WideIn(int id) => db.AddUserInGroup(id, User.Identity.Name);
 
@@ -337,6 +326,7 @@ namespace BibliographicSystem.Controllers
                         if (group.UserName == User.Identity.Name && group.GroupId == groupId)
                             user = group;
                     }
+
                     db.UserInGroups.Remove(user);
                     db.SaveChanges();
                     break;
@@ -349,6 +339,7 @@ namespace BibliographicSystem.Controllers
                     db.SaveChanges();
                     break;
             }
+
             var model = db.Groups.Find(groupId);
             model.Articles = db.ArticleByGroup(groupId);
             model.Users = db.UsersByGroup(groupId);
@@ -359,6 +350,34 @@ namespace BibliographicSystem.Controllers
         {
             db.Dispose();
             base.Dispose(disposing);
+        }
+
+        private void AddBib(TextWriter textFile, Article art)
+        {
+            switch (art.Type)
+            {
+                case "Статья":
+                    textFile.WriteLine("@ARTICLE{");
+                    break;
+                case "Книга":
+                    textFile.WriteLine("@BOOK{");
+                    break;
+            }
+
+            textFile.WriteLine("author = {" + art.Author + "},");
+            textFile.WriteLine("title = {«" + art.Title + "»},");
+
+            if (art.Publisher != string.Empty)
+                textFile.WriteLine("publisher = {" + art.Publisher + "},");
+
+            if (art.Journal != string.Empty)
+                textFile.WriteLine("journal = {" + art.Journal + "},");
+
+            if (art.Year != string.Empty)
+                textFile.WriteLine("year = {" + art.Year + "},");
+
+            textFile.WriteLine("note = {" + art.Note + "},");
+            textFile.WriteLine("}");
         }
     }
 }
