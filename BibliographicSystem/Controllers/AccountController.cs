@@ -7,26 +7,24 @@ namespace BibliographicSystem.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        //
-        // GET: /Account/
-
-        public ActionResult LogIn() => View();
+        public ActionResult SignIn() => View();
 
         [HttpPost]
-        public ActionResult LogIn(LogOnModel model, string returnUrl)
+        public ActionResult SignIn(LogOnModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                if (Membership.ValidateUser(model.Username, model.Password))
+                string name = Membership.GetUserNameByEmail(model.Email);
+                if (Membership.ValidateUser(name, model.Password))
                 {
-                    FormsAuthentication.SetAuthCookie(model.Username, model.RememberMe);
+                    FormsAuthentication.SetAuthCookie(name, model.RememberMe);
                     if (Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
                     }
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Неправильный пароль или логин");
+                ModelState.AddModelError("", "Неправильный пароль или почта");
             }
             return View(model);
         }
@@ -34,25 +32,25 @@ namespace BibliographicSystem.Controllers
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("SignIn", "Account");
         }
 
-        public ActionResult SignIn() => View();
+        public ActionResult SignUp() => View();
 
         [HttpPost]
-        public ActionResult SignIn(RegisterModel model)
+        public ActionResult SignUp(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
                 MembershipCreateStatus createStatus;
                 Membership.CreateUser(
                     username: model.Username,
-                    password: model.Password, 
+                    password: model.Password,
                     email: model.Email,
-                    passwordQuestion: null, 
-                    passwordAnswer: null, 
-                    isApproved: true, 
-                    providerUserKey: null, 
+                    passwordQuestion: null,
+                    passwordAnswer: null,
+                    isApproved: true,
+                    providerUserKey: null,
                     status: out createStatus);
 
                 if (createStatus == MembershipCreateStatus.Success)
@@ -66,6 +64,18 @@ namespace BibliographicSystem.Controllers
         }
 
         public ActionResult Manage() => View(new AddingToSystem());
+
+        public JsonResult CheckUsername(string Username)
+        {
+            var result = Membership.FindUsersByName(Username).Count == 0;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult CheckEmail(string Email)
+        {
+            var result = Membership.FindUsersByEmail(Email).Count == 0;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
 
