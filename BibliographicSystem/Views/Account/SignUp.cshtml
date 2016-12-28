@@ -1,0 +1,37 @@
+﻿@model BibliographicSystem.Models.RegisterModel
+@{
+    ViewBag.Title = "Регистрация";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+
+<div class="container">
+    @Scripts.Render("~/Scripts/registration.js")
+    @Styles.Render("~/Content/registration.css")
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <form  class="form-horizontal" method="post">
+                <h2 class="form-signin-heading">Регистрация</h2>
+                @Html.ValidationSummary(true)
+                <input type="text" name="Username" id="Username" class="form-control" placeholder="Логин" onkeydown="return keyDown.call(this, event)"  required><span></span>
+                <input type="text" name="Email" id="Email" class="form-control" placeholder="E-mail" onkeydown="return keyDown.call(this, event)" required><span></span>
+                <input type="password" name="Password" id="Password" class="form-control" placeholder="Пароль" required><span></span>
+                <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="Повторите пароль" required><span></span>
+                <button type="submit" id="Button" class="btn btn-lg btn-primary btn-block">Зарегистрироваться</button>
+                <script type="text/javascript">
+                    checkRegistration();
+
+                    function keyDown(e) {
+                        if (e.keyCode === " ".charCodeAt(0))
+                            return false;
+                    }
+                </script>
+
+            </form>
+        </div> <!-- col -->
+   </div>  <!--row--> 
+</div> <!--container -->
+
