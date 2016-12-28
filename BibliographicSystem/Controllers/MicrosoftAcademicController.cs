@@ -29,7 +29,7 @@ namespace BibliographicSystem.Controllers
         {
             if (query.Length + authors.Length + year.Length == 0)
             {
-                return PartialView("SearchResult", new List<MicrosoftAcademicArticle>());
+                return PartialView("SearchResult", new List<CommonArticle>());
             }
 
             var userQuery = new UserQuery { MainInput = query.ToLower(), Authors = authors.ToLower(), Year = year, Count = count };

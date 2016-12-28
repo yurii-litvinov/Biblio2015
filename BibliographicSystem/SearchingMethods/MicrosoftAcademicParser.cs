@@ -35,14 +35,13 @@ namespace BibliographicSystem.SearchingMethods
         /// returns list of articles
         /// </summary>
         /// <returns></returns>
-        public List<MicrosoftAcademicArticle> GetSearchResult()
+        public List<CommonArticle> GetSearchResult()
         {
-            var listOfArticles = new List<MicrosoftAcademicArticle>();
+            var listOfArticles = new List<CommonArticle>();
             var expressions = GetListOfExpr();
             var count = (userQuery.Count == ""? "10" : userQuery.Count);
             foreach (var expression in expressions)
             {
-
                 count = (Convert.ToInt32(count) - listOfArticles.Count).ToString();
                 var responseStatusCode = MakeGetRequest(expression, count);
 
@@ -165,10 +164,10 @@ namespace BibliographicSystem.SearchingMethods
         /// </summary>
         /// <param name="entity">deserialized object</param>
         /// <returns></returns>
-        private MicrosoftAcademicArticle CopyData(Entity entity)
+        private CommonArticle CopyData(Entity entity)
         {
             var extendedMetadata = JsonConvert.DeserializeObject<Extended>(entity.E, new MetadataConverter());
-            var article = new MicrosoftAcademicArticle
+            var article = new CommonArticle
             {
                 Year = entity.Y,
                 CitationCount = entity.CC,
@@ -190,7 +189,7 @@ namespace BibliographicSystem.SearchingMethods
             {
                 foreach (var author in entity.AA)
                 {
-                    article.Authors.Add(new Author { AuthorName = author.AuN, AuthorId = author.AuId });
+                    article.Authors.Add(new Author{ AuthorName = author.AuN, AuthorId = author.AuId });
                 }
             }
 

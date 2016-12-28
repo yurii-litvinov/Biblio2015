@@ -25,15 +25,13 @@
             <div class="row">
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-
+                        <li>@Html.ActionLink("Поиск", "Search", "Search")</li>
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#search">
-                                Search <i class="glyphicon glyphicon-search"></i>
-                                <span class="caret"></span>
-                            </a>
+                            <a class="glyphicon glyphicon-search, dropdown-toggle" data-toggle="dropdown" href="#search">
+                            <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li>@Html.ActionLink("Microsoft Academic", "SearchOnMicrosoftAcademic", "MicrosoftAcademic")</li>
-                                <li>@Html.ActionLink("Искать на Scholar", "SearchOnScholar", "Scholar")</li>
+                                <li>@Html.ActionLink("Google Scholar", "SearchOnScholar", "Scholar")</li>
                             </ul>
                         </li>
 

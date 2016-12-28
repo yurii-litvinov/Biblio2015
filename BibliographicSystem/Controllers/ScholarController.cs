@@ -48,11 +48,11 @@ namespace BibliographicSystem.Controllers
             int dateEnd = int.MinValue)
         {
             if (query.Length == 0)
-                return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
+                return PartialView("SearchOnScholarResult", new List<CommonArticle>());
             var parsing = new GoogleScholarParser();
             try
             {
-                var resultList = new List<ScholarArticle>();
+                var resultList = new List<CommonArticle>();
                 for (var i = 0; i < number; i += 10)
                 {
                     var parsedArticles = resultList.Count;
@@ -66,12 +66,12 @@ namespace BibliographicSystem.Controllers
                     return PartialView("SearchOnScholarResult", resultList);
 
                 ModelState.AddModelError("Empty list", "Ничего не найдено");
-                return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
+                return PartialView("SearchOnScholarResult", new List<CommonArticle>());
             }
             catch (NullReferenceException)
             {
                 ModelState.AddModelError("Empty list", "Ничего не найдено");
-                return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
+                return PartialView("SearchOnScholarResult", new List<CommonArticle>());
             }
         }
 

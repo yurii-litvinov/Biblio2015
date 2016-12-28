@@ -1,4 +1,4 @@
-﻿@model List<BibliographicSystem.Models.MicrosoftAcademicArticle>
+﻿@model List<BibliographicSystem.Models.CommonArticle>
 @Html.ValidationMessage("Empty list")
 
 @if (Model.Count != 0)
@@ -43,9 +43,9 @@
                             <li class="list-group-item">Авторы: @Model[i].Authors[0].AuthorName
                                 <a href="@authors" data-toggle="collapse">...</a>
                                 <div id="@authorsId" class="collapse"> 
-                                    @foreach (var author in Model[i].Authors)
+                                    @for (int j = 1; j < Model[i].Authors.Count; ++j)
                                     {
-                                        <div>@author.AuthorName</div>;
+                                        <div>@Model[i].Authors[j].AuthorName</div>;
                                     }
                                 </div>
                             </li>

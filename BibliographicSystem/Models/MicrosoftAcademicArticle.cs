@@ -15,13 +15,4 @@ namespace BibliographicSystem.Models
         public List<string> References { get; set; }
         public List<Author> Authors { get; set; }
     }
-
-    /// <summary>
-    /// class that represents author of article
-    /// </summary>
-    public class Author
-    {
-        public string AuthorName { get; set; }
-        public long AuthorId { get; set; }
-    }
 }

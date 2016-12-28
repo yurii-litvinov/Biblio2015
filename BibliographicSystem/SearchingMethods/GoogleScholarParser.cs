@@ -71,6 +71,19 @@ namespace BibliographicSystem.SearchingMethods
             return authorsString;
         }
 
+        public List<Author> GetAuthorsList(string articleInfo)
+        {
+            var author = new Regex(@"[A-Z]{1,}\s{1}[A-Za-z]{1,}|[А-Я]{1,}\s{1}[А-Яа-я]{1,}");
+            var matches = author.Matches(articleInfo);
+            var authors = (from Match match in matches select match.Value).ToList();
+            var result = new List<Author>();
+            foreach (var name in authors)
+            {
+                result.Add(new Author { AuthorName = name, AuthorId = 0 });
+            }
+            return result;
+        }
+
         public string GetYear(string articleInfo)
         {
             const string yearPattern = @"\d{4}";
@@ -186,7 +199,7 @@ namespace BibliographicSystem.SearchingMethods
         /// <param name="dateStart"> Since date </param>
         /// <param name="dateEnd"> Till date </param>
         /// <returns> List of articles from Google.Scholar </returns>
-        public List<ScholarArticle> GetScholarArticlesByQuery(string query, 
+        public List<CommonArticle> GetScholarArticlesByQuery(string query, 
             int page,
             string exactPhrase = null,
             string without = null,
@@ -201,13 +214,13 @@ namespace BibliographicSystem.SearchingMethods
             var pageContent = GetPageContent(query);
 
             // creating list of articles for "search on scholar" view
-            var scholarArticles = new List<ScholarArticle>();
+            var scholarArticles = new List<CommonArticle>();
 
             var doc = new HtmlDocument();
             doc.LoadHtml(pageContent);
             for (var i = 1; i <= 11; i++)
             {
-                var article = new ScholarArticle();
+                var article = new CommonArticle();
                 var xPathBiblioCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]";
                 //*[@id="gs_ccl_results_results"]/div[1]
                 var biblioCheck = doc.DocumentNode.SelectSingleNode(xPathBiblioCheck);
@@ -220,18 +233,32 @@ namespace BibliographicSystem.SearchingMethods
                     var xPathTitle = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/h3/a";
                     article.Title = doc.DocumentNode.SelectSingleNode(xPathTitle).InnerText;
 
-                    // adding info 
-                    var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[1]";
-                    article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                    //adding info, description
+                    var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[2]";
+                    var info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                    if (info != null)
+                    {
+                        var xPathDescription = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[1]";
+                        var description = doc.DocumentNode.SelectSingleNode(xPathDescription).InnerText;
+                        article.Description = description;
+                    }
+                    else
+                    {
+                        xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[1]";
+                        info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                    }
+                    article.Year = Convert.ToInt32(GetYear(info));
+                    article.Authors = GetAuthorsList(info);
 
                     // adding reference
-                    article.Reference = refCheck.GetAttributeValue("href", null);
+                    article.References.Add(doc.DocumentNode.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div[1]/div/div/a").GetAttributeValue("href", null));
+                    //article.References.Add(refCheck.GetAttributeValue("href", null));
 
-                    // adding citiations amount
-                    var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[3]/a[1]";
-                    var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                    article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
-
+                    // adding citations amount
+                    var xPathCitations = $"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[3]/a[1]";
+                    var citationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitations).InnerText;
+                    var citations = citationsCheck.StartsWith("Cited by") ? citationsCheck : "";
+                    article.CitationCount = citations == "" ? 0 : Convert.ToInt32(Regex.Replace(citations, @"[^\d]+", ""));
                     scholarArticles.Add(article);
                 }
                 else
@@ -242,22 +269,33 @@ namespace BibliographicSystem.SearchingMethods
                     {
                         var xPathTitle = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3/a";
                         article.Title = doc.DocumentNode.SelectSingleNode(xPathTitle).InnerText;
-
-                        var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
-                        article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
-
-                        article.Reference = refCheck.GetAttributeValue("href", null);
+                        
+                        var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]";
+                        var info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                        if (info != null)
+                        {
+                            var xPathDescription = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
+                            var description = doc.DocumentNode.SelectSingleNode(xPathDescription).InnerText;
+                            article.Description = description;
+                        }
+                        else
+                        {
+                            xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
+                            info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                        }
+                        article.Year = Convert.ToInt32(GetYear(info));
+                        article.Authors = GetAuthorsList(info);
+                        //article.References.Add(refCheck.GetAttributeValue("href", null));
 
                         var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[3]/a[1]";
-                        var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                        article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
-
+                        var citationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
+                        var citations = citationsCheck.StartsWith("Cited by") ? citationsCheck : "";
+                        article.CitationCount = citations == "" ? 0 : Convert.ToInt32(Regex.Replace(citations, @"[^\d]+", ""));
                         scholarArticles.Add(article);
                     }
-
                     else
                     {
-                        // case, when article do not has reference, but has a tag [citiation]/[book]
+                        // case, when article do not has reference, but has a tag [citation]/[book]
                         var xPathTitleCheck = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3";
                         var xPathSpanNode = $"//*[@id='gs_ccl_results']/div[{i}]/div/h3/span";
                         var titleMatchNode = doc.DocumentNode.SelectSingleNode(xPathTitleCheck);
@@ -267,15 +305,26 @@ namespace BibliographicSystem.SearchingMethods
                             titleMatchNode.RemoveChild(spanNode);
                             article.Title = titleMatchNode.InnerText;
 
-                            string xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
-                            article.Info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                            var xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]";
+                            var info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                            if (info != null)
+                            {
+                                var xPathDescription = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
+                                var description = doc.DocumentNode.SelectSingleNode(xPathDescription).InnerText;
+                                article.Description = description;
+                            }
+                            else
+                            {
+                                xPathInfo = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]";
+                                info = doc.DocumentNode.SelectSingleNode(xPathInfo).InnerText;
+                            }
+                            article.Year = Convert.ToInt32(GetYear(info));
+                            article.Authors = GetAuthorsList(info);
 
-                            article.Reference = "This article does not have a reference";
-
-                            var xPathCitiations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]/a[1]";
-                            var citiationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitiations).InnerText;
-                            article.Citiations = citiationsCheck.StartsWith("Cited by") ? citiationsCheck : "No citiations for this article. ";
-
+                            var xPathCitations = $"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]/a[1]";
+                            var citationsCheck = doc.DocumentNode.SelectSingleNode(xPathCitations).InnerText;
+                            var citations = citationsCheck.StartsWith("Cited by") ? citationsCheck : "No citations for this article. ";
+                            article.CitationCount = citations == "No citations for this article. " ? 0 : Convert.ToInt32(Regex.Replace(citations, @"[^\d]+", ""));
                             scholarArticles.Add(article);
                         }
                     }

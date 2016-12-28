@@ -1,4 +1,4 @@
-﻿@model List<BibliographicSystem.Models.ScholarArticle>
+﻿@model List<BibliographicSystem.Models.CommonArticle>
 @Html.ValidationMessage("Empty list")
 
 @if (Model.Count != 0)
@@ -20,27 +20,30 @@
             </div>
             <div class="panel-body">
                 <ul class="list-group">
-                    <li class="list-group-item">@art.Info</li>
-                    <li class="list-group-item">@art.Citiations</li>
-                    <a class="list-group-item" name="@art.Reference" href="@art.Reference">@art.Reference</a>
+                    @if (@art.References.Count == 0)
+                    {
+                        art.References.Add("");
+                    }
+                    <li class="list-group-item">@art.Description</li>
+                    <li class="list-group-item">@art.CitationCount</li>
+                    <a class="list-group-item" name="@art.References[0]" href="@art.References[0]">@art.References[0]</a>
                     <span class="input-group-btn">
                         @if (Request.IsAuthenticated)
                         {
                             using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
                             {
                                 <input type="text" name="title" value="@art.Title" hidden="true" />
-                                    <input type="text" name="info" value="@art.Info" hidden="true" />
-                                    <input type="text" name="reference" value="@art.Reference" hidden="true" />
+                                    <input type="text" name="description" value="@art.Description" hidden="true" />
+                                    <input type="text" name="reference" value="@art.References[0]" hidden="true" />
                                     <input type="text" name="username" value="@User.Identity.Name" hidden="true" />
                                     <button type="submit" class="btn btn-default">Добавить статью</button>
                             }
-
                         }
                         @using (Html.BeginForm("DownloadBibTeX", "Scholar", FormMethod.Post))
                         {
                             <input type="text" name="title" value="@art.Title" hidden="true" />
-                                <input type="text" name="info" value="@art.Info" hidden="true" />
-                                <input type="text" name="reference" value="@art.Reference" hidden="true" />
+                                <input type="text" name="description" value="@art.Description" hidden="true" />
+                                <input type="text" name="reference" value="@art.References[0]" hidden="true" />
                                 <button type="submit" class="btn btn-default">Скачать BibTeX</button>
                         }
                     </span>
