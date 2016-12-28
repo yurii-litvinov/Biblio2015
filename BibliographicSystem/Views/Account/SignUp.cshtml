@@ -8,7 +8,8 @@
 <br>
 
 <div class="container">
-    <script src="~/Scripts/registration.js"></script>
+    @Scripts.Render("~/Scripts/registration.js")
+    @Styles.Render("~/Content/registration.css")
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4">
@@ -24,7 +25,8 @@
                     checkRegistration();
 
                     function keyDown(e) {
-                        if (e.keyCode == 32) return false;
+                        if (e.keyCode === " ".charCodeAt(0))
+                            return false;
                     }
                 </script>
 

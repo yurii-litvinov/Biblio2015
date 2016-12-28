@@ -65,15 +65,15 @@ namespace BibliographicSystem.Controllers
 
         public ActionResult Manage() => View(new AddingToSystem());
 
-        public JsonResult CheckUsername(string Username)
+        public JsonResult CheckUsername(string username)
         {
-            var result = Membership.FindUsersByName(Username).Count == 0;
+            var result = Membership.FindUsersByName(username).Count == 0;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult CheckEmail(string Email)
+        public JsonResult CheckEmail(string email)
         {
-            var result = Membership.FindUsersByEmail(Email).Count == 0;
+            var result = Membership.FindUsersByEmail(email).Count == 0;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
