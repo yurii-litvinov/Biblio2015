@@ -1,0 +1,76 @@
+﻿@model List<BibliographicSystem.Models.CommonArticle>
+@Html.ValidationMessage("Empty list")
+
+@if (Model.Count != 0)
+{
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <h3>Список статей</h3>
+        </div>
+    </div>
+}
+
+<div class="panel-group" id="accordion">
+    @for (int i = 0; i < Model.Count; ++i)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    @{
+                        string collapse = "#collapse" + i.ToString();
+                        string collapseId = "collapse" + i.ToString();
+
+                        string description = "#description" + i.ToString();
+                        string descriptionId = "description" + i.ToString();
+
+                        string reference = "#reference" + i.ToString();
+                        string referenceId = "reference" + i.ToString();
+
+                        string authors = "#author" + i.ToString();
+                        string authorsId = "author" + i.ToString();
+                    }
+                    <a data-toggle="collapse" data-parent="#accordion" href="@collapse">
+                        @Model[i].Title
+                    </a>
+                </h4>
+            </div>
+            <div id="@collapseId" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Количество цитирований: @Model[i].CitationCount</li>
+                        <li class="list-group-item">Год публикации: @Model[i].Year</li>
+                        <li class="list-group-item">
+                            Авторы: @Model[i].Authors[0].AuthorName
+                            <a href="@authors" data-toggle="collapse">...</a>
+                            <div id="@authorsId" class="collapse">
+                                @for (int j = 1; j < Model[i].Authors.Count; ++j)
+                                {
+                                    <div>@Model[i].Authors[j].AuthorName</div>;
+                                }
+                            </div>
+                        </li>
+                        <li class="list-group-item-info">
+                            <a href="@description" data-toggle="collapse">Описание</a>
+                            <div id="@descriptionId" class="collapse">
+                                @Model[i].Description
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel-footer">
+                    <a href="@reference" data-toggle="collapse">Ссылки</a>
+                    <div id="@referenceId" class="collapse">
+                        @foreach (var refart in Model[i].References)
+                        {
+                            <a class="list-group-item" name="@refart" href="@refart">@refart</a>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    }
+</div> 

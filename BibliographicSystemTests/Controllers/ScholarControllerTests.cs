@@ -31,7 +31,7 @@ namespace BibliographicSystemTests.Controllers
             var view = controller.SearchOnScholarResult("journal", 22);
             var list = (List<ScholarArticle>)view.Model;
             Assert.AreEqual(22, list.Count);
-            var info= list.Select(article => article.Info).ToList();
+            var info= list.Select(article => article.Description).ToList();
             var count = info.Select(inf => inf.ToLower()).Count(lowerHead => lowerHead.Contains("journal"));
             Assert.IsTrue(count > 10);
         }
@@ -46,7 +46,7 @@ namespace BibliographicSystemTests.Controllers
             var view = controller.SearchOnScholarResult("kill", 3);
             var list = (List<ScholarArticle>)view.Model;
             Assert.AreEqual(3, list.Count);
-            var info = list.Select(article => article.Info).ToList();
+            var info = list.Select(article => article.Description).ToList();
             var count = info.Select(inf => inf.ToLower()).Count(lowerHead => lowerHead.Contains("kill"));
             Assert.IsTrue(count > 0);
         }

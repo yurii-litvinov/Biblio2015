@@ -173,7 +173,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MicrosoftAcademicController.cs" />
     <Compile Include="Controllers\ScholarController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -183,11 +185,14 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\AddingToSystem.cs" />
     <Compile Include="Models\LogModel.cs" />
+    <Compile Include="Models\MicrosoftAcademicArticle.cs" />
     <Compile Include="Models\ScholarArticle.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\UsersArticle.cs" />
     <Compile Include="SearchingMethods\GoogleScholarParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchingMethods\MicrosoftAcademicParser.cs" />
+    <Compile Include="Models\CommonArticle.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\BootAppDB.mdf" />
@@ -263,7 +268,7 @@
     <Content Include="Views\Home\GroupPage.cshtml" />
     <Content Include="Views\Home\MainPage.cshtml" />
     <Content Include="Views\Home\SearchGroupResult.cshtml" />
-    <Content Include="Views\Home\SearchResult.cshtml" />
+    <Content Include="Views\Search\SearchResult.cshtml" />
     <Content Include="Views\Account\LogIn.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\SignIn.cshtml" />
@@ -272,6 +277,9 @@
     <Content Include="Views\Shared\UserGroupList.cshtml" />
     <Content Include="Views\Shared\_LogInPartial.cshtml" />
     <Content Include="Views\Scholar\SearchOnScholarResult.cshtml" />
+    <Content Include="Views\MicrosoftAcademic\SearchOnMicrosoftAcademic.cshtml" />
+    <Content Include="Views\MicrosoftAcademic\SearchResult.cshtml" />
+    <Content Include="Views\Search\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\People\" />
