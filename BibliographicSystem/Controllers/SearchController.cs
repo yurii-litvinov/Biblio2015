@@ -13,13 +13,13 @@ namespace BibliographicSystem.Controllers
 
         public PartialViewResult SearchResult(string query = "",
             int number = 10,
+            string authors = null,
+            int dateStart = int.MinValue,
+            int dateEnd = int.MaxValue,
             string exactPhrase = null,
             string without = null,
             bool head = false,
-            string published = null,
-            string authors = null,
-            int dateStart = int.MinValue,
-            int dateEnd = int.MinValue)
+            string published = null)
         {
             var googleParser = new GoogleScholarParser();
             try
@@ -44,10 +44,12 @@ namespace BibliographicSystem.Controllers
                     return PartialView("SearchResult", new List<CommonArticle>());
                 }
 
-                listOfGoogleScholarArticles.AddRange(listOfMicrosoftArticles);
-
-                if (listOfGoogleScholarArticles.Count > number)
+                /*if (listOfGoogleScholarArticles.Count > number)
                     listOfGoogleScholarArticles.RemoveRange(number, listOfGoogleScholarArticles.Count - number);
+                if (listOfMicrosoftArticles.Count > number)
+                    listOfMicrosoftArticles.RemoveRange(number, listOfMicrosoftArticles.Count - number);*/
+
+                listOfGoogleScholarArticles.AddRange(listOfMicrosoftArticles);
 
                 return PartialView("SearchResult", listOfGoogleScholarArticles);
             }

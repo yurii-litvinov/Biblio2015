@@ -41,14 +41,17 @@
                         <li class="list-group-item">Количество цитирований: @Model[i].CitationCount</li>
                         <li class="list-group-item">Год публикации: @Model[i].Year</li>
                         <li class="list-group-item">
-                            Авторы: @Model[i].Authors[0].AuthorName
-                            <a href="@authors" data-toggle="collapse">...</a>
-                            <div id="@authorsId" class="collapse">
-                                @for (int j = 1; j < Model[i].Authors.Count; ++j)
-                                {
-                                    <div>@Model[i].Authors[j].AuthorName</div>;
-                                }
-                            </div>
+                            Авторы: @if (Model[i].Authors.Count > 0)
+                            {
+                                @Model[i].Authors[0].AuthorName;
+                                <a href="@authors" data-toggle="collapse">...</a>
+                                <div id="@authorsId" class="collapse">
+                                    @for (int j = 1; j < Model[i].Authors.Count; ++j)
+                                    {
+                                        <div>@Model[i].Authors[j].AuthorName</div>;
+                                    }
+                                </div>
+                            }
                         </li>
                         <li class="list-group-item-info">
                             <a href="@description" data-toggle="collapse">Описание</a>
@@ -68,6 +71,8 @@
                         }
 
                     </div>
+
+                    
                 </div>
             </div>
         </div>

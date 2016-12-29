@@ -151,12 +151,7 @@ namespace BibliographicSystem.SearchingMethods
             and = and.Remove(and.Length - 1);
             or = or.Remove(or.Length - 1);
 
-            var listOfExpr = new List<string>();
-            listOfExpr.Add("And(" + and + ")");
-            listOfExpr.Add("And(" + or + ")");
-            listOfExpr.Add("Or(" + and + ")");
-            listOfExpr.Add("Or(" + or + ")");
-            return listOfExpr;
+            return new List<string> { "And(" + and + ")", "And(" + or + ")", "Or(" + and + ")", "Or(" + or + ")" };
         }
 
         /// <summary>
