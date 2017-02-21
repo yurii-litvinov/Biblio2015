@@ -173,6 +173,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MicrosoftAcademicController.cs" />
     <Compile Include="Controllers\ScholarController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -183,11 +184,13 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\AddingToSystem.cs" />
     <Compile Include="Models\LogModel.cs" />
+    <Compile Include="Models\MicrosoftAcademicArticle.cs" />
     <Compile Include="Models\ScholarArticle.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\UsersArticle.cs" />
     <Compile Include="SearchingMethods\GoogleScholarParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchingMethods\MicrosoftAcademicParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\BootAppDB.mdf" />
@@ -274,6 +277,8 @@
     <Content Include="Views\Shared\UserGroupList.cshtml" />
     <Content Include="Views\Shared\_LogInPartial.cshtml" />
     <Content Include="Views\Scholar\SearchOnScholarResult.cshtml" />
+    <Content Include="Views\MicrosoftAcademic\SearchOnMicrosoftAcademic.cshtml" />
+    <Content Include="Views\MicrosoftAcademic\SearchResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\People\" />
