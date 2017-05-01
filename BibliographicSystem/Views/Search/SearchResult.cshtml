@@ -1,0 +1,88 @@
+﻿@model List<BibliographicSystem.Models.OutsideArticle>
+@Html.ValidationMessage("Empty list")
+
+@if (Model.Count != 0)
+{
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <h3>Список статей</h3>
+        </div>
+    </div>
+}
+
+@{int i = 0; }
+
+@foreach (var article in Model)
+{
+    string iter = i.ToString();
+    string authors= "author" + iter;
+    string references = "reference" + iter;
+    string description = "description" + iter;
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">@article.Title</h2>
+        </div>
+
+        <div class="panel-body">
+            <ul class="list-group">
+                <li class="list-group-item">Количество цитирований @article.CitationCount</li>
+                <li class="list-group-item">Год публикации @article.Year</li>
+                <li class="list-group-item">
+                    Авторы: @article.Authors[0].AuthorName
+                    <a href="#@authors" data-toggle="collapse">...</a>
+                    <div id="@authors" class="collapse">
+                        @foreach (var author in article.Authors)
+                        {
+                            <div>@author.AuthorName</div>;
+                        }
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <a href="#@description" data-toggle="collapse">Описание</a>
+                    <div id="@description" class="collapse">
+                        @article.Description
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <a href="#@references" data-toggle="collapse">Ссылки</a>
+                    <div id="@references" class="collapse">
+                        @foreach (var refart in article.References)
+                        {
+                            <a class="list-group-item" name="@refart" href="@refart">@refart</a>
+                        }
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel-footer">
+            <div class="list-group">
+                <span class="input-group-btn">
+                    @if (Request.IsAuthenticated)
+                    {
+                        using (Html.BeginForm("AddArticle", "Scholar", FormMethod.Post))
+                        {
+                            <input type="text" name="title" value="@article.Title" hidden="true" />
+                                <input type="text" name="info" value="@article.Info" hidden="true" />
+                                <input type="text" name="reference" value="@article.Reference" hidden="true" />
+                                    <input type="text" name="username" value="@User.Identity.Name" hidden="true" />
+                                    <button type="submit" class="btn btn-default">Добавить статью</button>
+                        }
+                    }
+                    @using (Html.BeginForm("DownloadBibTeX", "Scholar", FormMethod.Post))
+                    {
+                        <input type="text" name="title" value="@article.Title" hidden="true" />
+                            <input type="text" name="info" value="@article.Info" hidden="true" />
+                            <input type="text" name="reference" value="@article.Reference" hidden="true" />
+                                <button type="submit" class="btn btn-default">Скачать BibTeX</button>
+                    }
+                </span>
+
+            </div>
+        </div>
+    </div>
+
+    ++i;
+}

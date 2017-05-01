@@ -1,0 +1,66 @@
+﻿@model string
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ajaxOptions = new AjaxOptions
+    {
+        UpdateTargetId = "getDataList"
+    };
+}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+@using (Ajax.BeginForm("SearchResult", ajaxOptions))
+{
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="input-group">
+                <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск статей">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                </span>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <button class="btn btn-primary" data-toggle="collapse" data-target="#exactSearch">Точный поиск</button>
+            <div id="exactSearch" class="collapse">
+                <form class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="Count">Количество статей(10 по умолчанию)</label>
+                        <div class="controls">
+                            <input type="text" id="Count" name="Count" size="60" placeholder="Введите количество статей">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="Author">Автор</label>
+                        <div class="controls">
+                            <input type="text" id="Authors" name="Authors" size="60" placeholder="Введите авторов через запятую">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="Year">Года</label>
+                        <div class="controls">
+                            <input type="text" id="Year" name="Year" size="60" placeholder="Введите год публикации статьи">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="Year">Место публикации</label>
+                        <div class="controls">
+                            <input type="text" id="Year" name="Year" size="60" placeholder="Введите место публикации статьи">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Поехали</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<form id="getDataList"></form>
