@@ -12,52 +12,37 @@ namespace BibliographicSystem.SearchingMethods
     /// <summary>
     /// class for parsing get requests from MicrosoftAcademic
     /// </summary>
-    public class MicrosoftAcademicParser
+    public class MicrosoftAcademicParser : IParser
     {
-        public MicrosoftAcademicParser(UserQuery userQuery)
+        public MicrosoftAcademicParser()
         {
-            this.userQuery = userQuery;
             response = new Response();
         }
 
-        /// <summary>
-        /// a class for storing precise user request
-        /// </summary>
-        public class UserQuery
-        {
-            public string MainInput { get; set; }
-            public string Authors { get; set; }
-            public string Year { get; set; }
-            public string Count { get; set; }
-        }
+        public UserQuery Query { get; set; }
 
         /// <summary>
         /// returns list of articles
         /// </summary>
         /// <returns></returns>
-        public List<MicrosoftAcademicArticle> GetSearchResult()
+        public List<OutsideArticle> GetArticles()
         {
-            var listOfArticles = new List<MicrosoftAcademicArticle>();
+            var articles = new List<OutsideArticle>();
             var expressions = GetListOfExpr();
-            var count = (userQuery.Count == ""? "10" : userQuery.Count);
+            var count = (Query.Count == "" ? "10" : Query.Count);
             foreach (var expression in expressions)
             {
-
-                count = (Convert.ToInt32(count) - listOfArticles.Count).ToString();
+                count = (Convert.ToInt32(count) - articles.Count).ToString();
                 var responseStatusCode = MakeGetRequest(expression, count);
 
                 if (responseStatusCode == HttpStatusCode.OK)
-                {
-                    listOfArticles.AddRange(response.entities.Select(CopyData));
-                }
-                
-                if (listOfArticles.Count.ToString() == userQuery.Count)
-                {
+                    articles.AddRange(response.entities.Select(CopyData));
+
+                if (articles.Count.ToString() == Query.Count)
                     break;
-                }
             }
-            
-            return listOfArticles;
+
+            return articles;
         }
 
         /// <summary>
@@ -100,9 +85,9 @@ namespace BibliographicSystem.SearchingMethods
         private List<string> GetListOfExpr()
         {
             var authorsInQuery = "";
-            if (userQuery.Authors.Length != 0)
+            if (Query.Authors.Length != 0)
             {
-                var inputtedAuthors = userQuery.Authors.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                var inputtedAuthors = Query.Authors.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var author in inputtedAuthors)
                 {
                     var fullName = author.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -117,9 +102,9 @@ namespace BibliographicSystem.SearchingMethods
             }
 
             var wordsInQuery = "";
-            if (userQuery.MainInput.Length != 0)
+            if (Query.MainInput.Length != 0)
             {
-                var inputtedWords = userQuery.MainInput.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var inputtedWords = Query.MainInput.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 wordsInQuery = inputtedWords.Aggregate(wordsInQuery, (current, word) => current + ",W=='" + word + "'");
                 wordsInQuery = wordsInQuery.Substring(1);  // without ,
                 wordsInQuery = '(' + wordsInQuery + ')';
@@ -142,9 +127,9 @@ namespace BibliographicSystem.SearchingMethods
             }
 
             var yearInQuery = "";
-            if (userQuery.Year.Length != 0)
+            if (Query.Year.Length != 0)
             {
-                yearInQuery = "Y=" + userQuery.Year + ",";
+                yearInQuery = "Y=" + Query.Year + ",";
             }
 
             var and = andAuthorsInQuery + andWordsInQuery + yearInQuery;
@@ -165,10 +150,10 @@ namespace BibliographicSystem.SearchingMethods
         /// </summary>
         /// <param name="entity">deserialized object</param>
         /// <returns></returns>
-        private MicrosoftAcademicArticle CopyData(Entity entity)
+        private OutsideArticle CopyData(Entity entity)
         {
             var extendedMetadata = JsonConvert.DeserializeObject<Extended>(entity.E, new MetadataConverter());
-            var article = new MicrosoftAcademicArticle
+            var article = new OutsideArticle
             {
                 Year = entity.Y,
                 CitationCount = entity.CC,
@@ -198,7 +183,6 @@ namespace BibliographicSystem.SearchingMethods
             return article;
         }
 
-        private UserQuery userQuery;
         private Response response;
 
         #region классы для десериализации json
