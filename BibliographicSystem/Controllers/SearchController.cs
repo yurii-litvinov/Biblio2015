@@ -65,6 +65,11 @@ namespace BibliographicSystem.Controllers
             //}
         }
 
+        public ViewResult ShowCaptcha()
+        {
+            return View("Captcha");
+        }
+
         //public ActionResult Index()
         //{
         //    return View();

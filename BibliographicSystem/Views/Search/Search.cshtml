@@ -14,6 +14,15 @@
 <br>
 <br>
 
+@using (Ajax.BeginForm("ShowCaptcha", ajaxOptions))
+{
+    <div class="row">
+
+                    <button type="submit" class="btn">captcha</button>
+
+    </div>
+}
+
 @using (Ajax.BeginForm("SearchResult", ajaxOptions))
 {
     <div class="row">
