@@ -277,7 +277,6 @@
     <Content Include="Views\Shared\_LogInPartial.cshtml" />
     <Content Include="Views\Search\Search.cshtml" />
     <Content Include="Views\Search\SearchResult.cshtml" />
-    <Content Include="Views\Search\Captcha.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\People\" />
