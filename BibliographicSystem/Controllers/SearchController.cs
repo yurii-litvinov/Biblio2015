@@ -34,47 +34,19 @@ namespace BibliographicSystem.Controllers
 
             var userQuery = new UserQuery { MainInput = query.ToLower(), Authors = authors.ToLower(), Year = year, Count = count };
             var processor = new QueryProcessor(userQuery);
+            processor.DownloadArticles();
             var articles = processor.GetSearchResult();
+            if (articles.Count == 0)
+                ModelState.AddModelError("Empty list", "Ничего не найдено");
+
+            if (!processor.IsSuccess())
+            {
+                processor.SetSuccessfulState();
+                ViewBag.Problems = processor.GetProblems();
+            }
+
             return PartialView("SearchResult", articles);
-
-            //if (query.Length == 0)
-            //    return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
-            //var parsing = new GoogleScholarParser();
-            //try
-            //{
-            //    var resultList = new List<ScholarArticle>();
-            //    for (var i = 0; i < number; i += 10)
-            //    {
-            //        var parsedArticles = resultList.Count;
-            //        resultList.AddRange(parsing.GetScholarArticlesByQuery(query, i, exactPhrase, without, head, published, author, dateStart, dateEnd));
-            //        if (resultList.Count == parsedArticles)
-            //            break;
-            //    }
-            //    if (resultList.Count > number)
-            //        resultList.RemoveRange(number, resultList.Count - number);
-            //    if (resultList.Count != 0)
-            //        return PartialView("SearchOnScholarResult", resultList);
-
-            //    ModelState.AddModelError("Empty list", "Ничего не найдено");
-            //    return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
-            //}
-            //catch (NullReferenceException)
-            //{
-            //    ModelState.AddModelError("Empty list", "Ничего не найдено");
-            //    return PartialView("SearchOnScholarResult", new List<ScholarArticle>());
-            //}
         }
-
-        public ViewResult ShowCaptcha()
-        {
-            return View("Captcha");
-        }
-
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
 
         [HttpPost]
         public ActionResult AddArticle(string title, string info, string reference, string username)

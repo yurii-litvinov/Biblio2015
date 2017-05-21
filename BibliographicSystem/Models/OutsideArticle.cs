@@ -7,6 +7,7 @@ namespace BibliographicSystem.Models
     /// </summary>
     public class OutsideArticle
     {
+        public string From { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int CitationCount { get; set; }
