@@ -16,114 +16,139 @@ namespace BibliographicSystem.SearchingMethods
     /// </summary>
     public class GoogleScholarParser : IParser
     {
+        /// <summary>
+        /// class constructor
+        /// </summary>
+        public GoogleScholarParser()
+        {
+            this.articles = new List<OutsideArticle>();
+            this.IsSuccessful = true;
+            this.problem = new Problem
+            {
+                Name = Problems.NoProblem,
+                Content = ""
+            };
+        }
+
         public UserQuery Query { get; set; }
 
-        /// <summary>
-        /// Main class method
-        /// </summary>
-        /// <param name="query"> aggregate information the user entered in the text boxes </param>
-        /// <returns> List of articles from Google.Scholar </returns>
-        public List<OutsideArticle> GetArticles()
+        public bool IsSuccessful { get; set; }
+
+        public Problem GetProblem() => this.problem;
+
+        public List<OutsideArticle> GetArticles() => this.articles;
+
+        public void RequestArticles()
         {
             var articles = new List<OutsideArticle>();
 
             /// с шагом 10 мы получаем новый набор страниц
-            for (int page = 0; page < 100; page += 10)
+            for (int page = 0; page < 10; page += 10)
             {
                 // getting page content from scholar page (with given query)
                 var queryURL = GetQueryUrl(Query.MainInput, page, Query.ExactPhrase, Query.Without, Query.Head, Query.Published, Query.Authors, Query.DateStart, Query.DateEnd);
                 var pageContent = GetPageContent(queryURL);
-
                 var doc = new HtmlDocument();
                 doc.LoadHtml(pageContent);
                 var root = doc.DocumentNode;
 
-                for (var i = 1; i <= 10; i++)
+                var captchaCheck = root.SelectSingleNode($"//*[@id='gs_res_bdy']/div[1]");
+                if (captchaCheck == null)
                 {
-                    string title = "";
-                    string reference = "";
-                    string citation = "";
-                    string info = "";
-
-                    //*[@id="gs_ccl_results_results"]/div[1]
-                    var biblioCheck = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div[2]");
-                    if (biblioCheck != null)
+                    var captcha = root.SelectSingleNode("/html[1]/body[1]/div[1]/div[6]");
+                    if (captcha != null)
                     {
-                        // adding title of article //by xPath of title
-                        title = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div[2]/h3/a").InnerText;
-
-                        // adding info 
-                        info = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[1]").InnerText;
-
-                        // adding reference
-                        var refCheck = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div[2]/h3/a");
-                        reference = refCheck.GetAttributeValue("href", null);
-
-                        // adding citiations amount
-                        citation = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div[2]/div[3]/a[1]").InnerText;
-                    }
-                    else
-                    {
-                        info = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/div[1]").InnerText;
-
-                        var refCheck = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/h3/a");
-                        if (refCheck != null)
+                        this.IsSuccessful = false;
+                        this.problem = new Problem
                         {
-                            title = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/h3/a").InnerText;
-                            reference = refCheck.GetAttributeValue("href", null);
-                            citation = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/div[3]/a[1]").InnerText;
-                        }
-                        else
-                        {
-                            // case, when article do not has reference, but has a tag [citiation]/[book]
-                            var titleMatchNode = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/h3");
-                            if (titleMatchNode != null)
-                            {
-                                var spanNode = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/h3/span");
-                                titleMatchNode.RemoveChild(spanNode);
+                            Name = Problems.GoogleScholarCaptcha,
+                            Content = captcha.InnerHtml.Replace("6LfFDwUTAAAAAIyC8IeC3aGLqVpvrB6ZpkfmAibj", "6LfaXx8UAAAAAAMZOnRTw_CNOGUHZdr3mEUYUl2H")
+                        };
 
-                                title = titleMatchNode.InnerText;
-                                reference = "empty";
-                                citation = root.SelectSingleNode($"//*[@id='gs_ccl_results']/div[{i}]/div/div[2]/a[1]").InnerText;
-                            }
-                        }
+                        return;
                     }
 
-                    var article = new OutsideArticle
+                    var captcha2 = root.SelectSingleNode("/html[1]/body[1]/div[1]");
+                    if (captcha2 != null)
                     {
+                        this.IsSuccessful = false;
+                        this.problem = new Problem
+                        {
+                            Name = Problems.GoogleScholarCaptcha,
+                            Content = captcha2.InnerHtml.Replace("6LfwuyUTAAAAAOAmoS0fdqijC2PbbdH4kjq62Y1b", "6LfaXx8UAAAAAAMZOnRTw_CNOGUHZdr3mEUYUl2H")
+                        };
+
+                        return;
+                    }
+                }
+
+                var nodes = root.SelectSingleNode($"//*[@id='gs_ccl_results']").ChildNodes.Where(node => node.Name == "div");
+                
+                /// Case when a user profile appears
+                if (nodes.Count() == 11)
+                    nodes = nodes.Skip(1);
+
+                foreach (var node in nodes)
+                {
+                    var n = node.LastChild.ChildNodes;
+                    var title = n[0].InnerText;
+                    var info = n[1].InnerText;
+                    var references = new List<string>();
+                    var citation = "";
+                    var description = "";
+                    try
+                    {
+                        citation = n[3].InnerText;
+                        description = n[2].InnerText;
+                        references.Add(n[0].LastChild.GetAttributeValue("href", null));
+                    }
+                    catch (ArgumentOutOfRangeException err)
+                    {
+                        // case, when article do not has reference, but has a tag [citiation]/[book] 
+                        citation = n[2].InnerText;
+                        description = "no description";
+                    }
+
+                    /// case when article has a bibliographic reference on the right
+                    if (node.ChildNodes.Count == 2)
+                        references.Add(node.FirstChild.LastChild.LastChild.LastChild.GetAttributeValue("href", null));
+
+                    var article = new OutsideArticle()
+                    {
+                        From = "GS",
                         Title = title,
-                        Description = info,
-                        CitationCount = citation.StartsWith("Cited by") ? Convert.ToInt32((citation.Split(' '))[2]) : 0,
-                        Year = this.GetYearRefact(info),
-                        References = new List<string>(),
-                        Authors = this.GetAuthorsRefact(info),
                         Info = info,
-                        Reference = reference,
+                        References = references,
+                        Authors = GetAuthorsRefact(info),
+                        Year = GetYearRefact(info),
+                        Description = description,
+                        CitationCount = citation.StartsWith("Cited by") ? Convert.ToInt32((citation.Split(' '))[2]) : 0
                     };
-
-                    if (reference != "empty")
-                        article.References.Add(reference);
 
                     articles.Add(article);
                 }
-            }
 
-            return articles;
+
+                this.articles = articles;
+            }
         }
 
-        private List<Author> GetAuthorsRefact(string description)
+        private List<OutsideArticle> articles;
+        private Problem problem;
+
+        private List<Author> GetAuthorsRefact(string info)
         {
             var author = new Regex(@"[A-Z]{1,}\s{1}[A-Za-z]{1,}|[А-Я]{1,}\s{1}[А-Яа-я]{1,}");
-            var matches = author.Matches(description);
+            var matches = author.Matches(info);
             var authors = (from Match match in matches select match.Value);
             return authors.Select(name => new Author { AuthorName = name, AuthorId = 0 }).ToList();
         }
 
-        private int GetYearRefact(string articleInfo)
+        private int GetYearRefact(string info)
         {
             const string yearPattern = @"\d{4}";
             var year = new Regex(yearPattern);
-            var yearMatch = year.Match(articleInfo);
+            var yearMatch = year.Match(info);
             return yearMatch.Success ? Convert.ToInt32(yearMatch.Value) : 0;
         }
 
@@ -173,7 +198,6 @@ namespace BibliographicSystem.SearchingMethods
             const string publisherPattern = @".{1,}";
             var publisher = new Regex(publisherPattern);
             var publisherMatch = publisher.Match(articleInfo, (dashRange.Last() + 3));
-
             return publisherMatch.Value;
         }
 
@@ -250,38 +274,25 @@ namespace BibliographicSystem.SearchingMethods
         private string GetPageContent(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
-            var response = (HttpWebResponse)request.GetResponse();
-            var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
-            var pageContent = streamReader.ReadToEnd();
-            streamReader.Close();
-            pageContent = HttpUtility.HtmlDecode(pageContent);
-            return pageContent;
-
-            //var request = (HttpWebRequest)WebRequest.Create(url);
-
-            //try
-            //{
-            //    HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
-            //    httpWebResponse.Cookies = request.CookieContainer.GetCookies(request.RequestUri);
-
-            //    var response = (HttpWebResponse)request.GetResponse();
-            //    var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
-            //    var pageContent = streamReader.ReadToEnd();
-            //    streamReader.Close();
-            //    pageContent = HttpUtility.HtmlDecode(pageContent);
-            //    return pageContent;
-
-            //}
-            //catch (WebException err)
-            //{
-            //    var errorWebResponse = (HttpWebResponse)err.Response;
-            //    Stream stream = errorWebResponse.GetResponseStream();
-            //    var stream1= new StreamReader(errorWebResponse.GetResponseStream(), Encoding.GetEncoding("utf-8"));
-            //    var pageContent1 = stream1.ReadToEnd();
-            //    stream1.Close();
-            //    pageContent1 = HttpUtility.HtmlDecode(pageContent1);
-            //    return pageContent1;
-            //}
+            try
+            {
+                //httpWebResponse.Cookies = request.CookieContainer.GetCookies(request.RequestUri);
+                var response = (HttpWebResponse)request.GetResponse();
+                var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
+                var pageContent = streamReader.ReadToEnd();
+                streamReader.Close();
+                pageContent = HttpUtility.HtmlDecode(pageContent);
+                return pageContent;
+            }
+            catch (WebException err)
+            {
+                var errorWebResponse = (HttpWebResponse)err.Response;
+                var streamReader = new StreamReader(errorWebResponse.GetResponseStream(), Encoding.GetEncoding("utf-8"));
+                var pageContent = streamReader.ReadToEnd();
+                streamReader.Close();
+                pageContent = HttpUtility.HtmlDecode(pageContent);
+                return pageContent;
+            }
         }
 
         private string GetQueryUrl(string query,
