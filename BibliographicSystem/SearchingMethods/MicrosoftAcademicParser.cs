@@ -17,15 +17,24 @@ namespace BibliographicSystem.SearchingMethods
         public MicrosoftAcademicParser()
         {
             response = new Response();
+            articles = new List<OutsideArticle>();
+            this.IsSuccessful = true;
+            this.problem = new Problem
+            {
+                Name = Problems.NoProblem,
+                Content = ""
+            };
         }
 
         public UserQuery Query { get; set; }
 
-        /// <summary>
-        /// returns list of articles
-        /// </summary>
-        /// <returns></returns>
-        public List<OutsideArticle> GetArticles()
+        public bool IsSuccessful { get; set; }
+
+        public Problem GetProblem() => this.problem;
+
+        public List<OutsideArticle> GetArticles() => this.articles;
+
+        public void RequestArticles()
         {
             var articles = new List<OutsideArticle>();
             var expressions = GetListOfExpr();
@@ -42,7 +51,7 @@ namespace BibliographicSystem.SearchingMethods
                     break;
             }
 
-            return articles;
+            this.articles = articles;
         }
 
         /// <summary>
@@ -155,6 +164,7 @@ namespace BibliographicSystem.SearchingMethods
             var extendedMetadata = JsonConvert.DeserializeObject<Extended>(entity.E, new MetadataConverter());
             var article = new OutsideArticle
             {
+                From = "MA",
                 Year = entity.Y,
                 CitationCount = entity.CC,
                 ExtendedMetadata = entity.E,
@@ -183,7 +193,9 @@ namespace BibliographicSystem.SearchingMethods
             return article;
         }
 
+        private List<OutsideArticle> articles;
         private Response response;
+        private Problem problem;
 
         #region классы для десериализации json
         /// <summary>
