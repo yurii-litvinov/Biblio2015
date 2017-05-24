@@ -1,0 +1,94 @@
+﻿@model string
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ajaxOptions = new AjaxOptions
+    {
+        UpdateTargetId = "getDataList"
+    };
+}
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+@using (Ajax.BeginForm("SearchResult", ajaxOptions))
+{
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="input-group">
+                <input type="text" id="Query" name="Query" class="form-control" placeholder="Поиск статей">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                </span>
+            </div>
+        </div>
+        
+        <div class="col-lg-3">
+            <button class="btn btn-primary" data-toggle="collapse" data-target="#exactSearch">Точный поиск</button>
+            <div id="exactSearch" class="collapse">
+                <form class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="Count">Количество статей(10 по умолчанию)</label>
+                        <div class="controls">
+                            <input type="text" id="Count" name="Count" size="60" placeholder="Введите количество статей">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="Author">Автор</label>
+                        <div class="controls">
+                            <input type="text" id="Authors" name="Authors" size="60" placeholder="Введите авторов через запятую">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="Year">Года</label>
+                        <div class="controls">
+                            <input type="text" id="Year" name="Year" size="60" placeholder="Введите год публикации статьи">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="Year">Место публикации</label>
+                        <div class="controls">
+                            <input type="text" id="Year" name="Year" size="60" placeholder="Введите место публикации статьи">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Поехали</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<form id="getDataList"></form>
+
+@*<hr noshade="" size="1" style="color:#ccc; background-color:#ccc;"><br>
+<form action="index" method="post">
+    <script src="https://www.google.com/recaptcha/api.js" async="" defer=""></script>
+    <noscript>
+        To continue, please type the characters below:<br><br>
+        <img src="/sorry/image?id=7950168213950990809&q=EgTZxQI9GPnWw8gFIhkA8aeDSzqIy9Ota08TWSdR_frwdlM53VXTMgNyY24&hl=en&continue=http://scholar.google.com/scholar%3Fstart%3D0%26hl%3Den%26q%3Dparser" border="1" alt="Please enable images"><br><br>
+        <input type="text" name="captcha" value="" id="captcha" size="12" style="font-size:16px; padding:3px 0 3px 5px; margin-left:0px;">
+        <style>
+            .jsonly {
+                display: none;
+            }
+        </style>
+    </noscript>
+    <div id="recaptcha" class="g-recaptcha jsonly" data-sitekey="6LfwuyUTAAAAAOAmoS0fdqijC2PbbdH4kjq62Y1b"></div>
+    <input type='hidden' name='q' value='EgTZxQI9GPnWw8gFIhkA8aeDSzqIy9Ota08TWSdR_frwdlM53VXTMgNyY24'><input type="hidden" name="continue" value="http://scholar.google.com/scholar?start=0&hl=en&q=parser">
+    <input type="submit" name="submit" value="Submit" style="font-size:18px; padding:4px 0;"><br><br><br>
+</form>
+<hr noshade="" size="1" style="color:#ccc; background-color:#ccc;">
+
+<div style="font-size:13px;">
+    <b>About this page</b><br><br>Our systems have detected unusual traffic from your computer network.  This page checks to see if it's really you sending the requests, and not a robot.  <a href="#" onclick="document.getElementById('infoDiv').style.display='block';">Why did this happen?</a><br><br>
+    <div id="infoDiv" style="display:none; background-color:#eee; padding:10px; margin:0 0 15px 0; line-height:1.4em;">
+        This page appears when Google automatically detects requests coming from your computer network which appear to be in violation of the <a href="//www.google.com/policies/terms/">Terms of Service</a>. The block will expire shortly after those requests stop.  In the meantime, solving the above CAPTCHA will let you continue to use our services.<br><br>This traffic may have been sent by malicious software, a browser plug-in, or a script that sends automated requests.  If you share your network connection, ask your administrator for help — a different computer using the same IP address may be responsible.  <a href="//support.google.com/websearch/answer/86640">Learn more</a><br><br>Sometimes you may be asked to solve the CAPTCHA if you are using advanced terms that robots are known to use, or sending requests very quickly.
+    </div>
+
+    IP address: 217.197.2.61<br>Time: 2017-05-08T22:04:41Z<br>URL: http://scholar.google.com/scholar?start=0&hl=en&q=parser<br>
+</div>*@
