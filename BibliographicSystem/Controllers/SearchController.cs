@@ -90,6 +90,6 @@ namespace BibliographicSystem.Controllers
             return Redirect("/Home/Finish");
         }
 
-        private readonly AppContext db = new AppContext();
+        private readonly bibliodb db = new bibliodb();
     }
 }

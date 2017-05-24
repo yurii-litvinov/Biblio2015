@@ -10,7 +10,7 @@ namespace BibliographicSystem.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppContext db = new AppContext();
+        private readonly bibliodb db = new bibliodb();
         private List<Article> list = new List<Article>();
 
         //

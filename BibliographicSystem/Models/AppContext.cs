@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BibliographicSystem.Models
 {
-    public class AppContext : DbContext
+    public class bibliodb : DbContext
     {
         public DbSet<Article> Articles { get; set; }
         public DbSet<Tag> Tags { get; set; }

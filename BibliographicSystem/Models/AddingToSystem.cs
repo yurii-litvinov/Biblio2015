@@ -19,7 +19,7 @@ namespace BibliographicSystem.Models
         public string Publisher{ get; set; }
         public string Note { get; set; }
 
-        private readonly AppContext db = new AppContext();
+        private readonly bibliodb db = new bibliodb();
 
         public List<Group> GroupsByUserName (string name) => db.GroupByUser(name);
 
